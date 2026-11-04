@@ -62,7 +62,6 @@ export function getStreak() {
   const log = getLog();
   let streak = 0;
   const d = new Date();
-  // today counts if logged; otherwise streak can still be alive from yesterday
   if (!isActive(log[dayKey(d)])) d.setDate(d.getDate() - 1);
   while (isActive(log[dayKey(d)])) {
     streak++;
@@ -99,9 +98,51 @@ export function addGratitude(text) {
   bumpStat('gratitude');
 }
 
+// ---------- daily mantra ----------
+export function getMantraDone() { return get('mantraDone', {}); }
+export function setMantraDone(done) {
+  const m = getMantraDone();
+  m[dayKey()] = done;
+  set('mantraDone', m);
+  if (done) bumpStat('mantras');
+}
+export function isMantraDone() {
+  const m = getMantraDone();
+  return !!m[dayKey()];
+}
+
+// ---------- chanting / mala ----------
+export function getChantLog() { return get('chantLog', []); }
+export function addChantSession(count, mantra) {
+  const log = getChantLog();
+  log.push({ date: dayKey(), at: Date.now(), count, mantra });
+  set('chantLog', log.slice(-500));
+  bumpStat('chanting');
+}
+
+// ---------- mala preferences ----------
+export function getMalaPrefs() { return get('malaPrefs', { mantra: 'Om Namaḥ Śivāya', target: 108 }); }
+export function setMalaPrefs(p) { set('malaPrefs', { ...getMalaPrefs(), ...p }); }
+
+// ---------- custom mantras ----------
+export function getCustomMantras() { return get('customMantras', []); }
+export function addCustomMantra(text) {
+  const arr = getCustomMantras();
+  const t = String(text).trim();
+  if (!t || arr.includes(t)) return arr;
+  arr.push(t);
+  set('customMantras', arr);
+  return arr;
+}
+export function removeCustomMantra(text) {
+  const arr = getCustomMantras().filter(m => m !== text);
+  set('customMantras', arr);
+  return arr;
+}
+
 // ---------- challenges ----------
 export function getChallengeState() {
-  return get('challenge', {}); // { '2026-11-04': {done: true, xp: 30} }
+  return get('challenge', {});
 }
 export function completeChallenge(xp) {
   const st = getChallengeState();
@@ -116,7 +157,7 @@ export function completeChallenge(xp) {
 // ---------- export ----------
 export function exportData() {
   const dump = {};
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge'].forEach(k => { dump[k] = get(k); });
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras'].forEach(k => { dump[k] = get(k); });
   const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -126,5 +167,5 @@ export function exportData() {
 }
 
 export function resetAll() {
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote'].forEach(del);
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras'].forEach(del);
 }
