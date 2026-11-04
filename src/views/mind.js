@@ -78,7 +78,7 @@ export function render(view) {
   view.innerHTML = `
     <div class="header"><div class="brand">${icon('mind')} Mind Studio</div></div>
     <div class="chips" id="mtabs">
-      ${[['meditate', '🧘 Meditate'], ['breathe', '🌬️ Breathe'], ['sleep', '🌙 Sleep Sounds'], ['sos', '🆘 SOS Calm'], ['mantra', '🕉️ Mantra'], ['dates', '📅 Dates']]
+      ${[['meditate', '🧘 Meditate'], ['breathe', '🌬️ Breathe'], ['sleep', '🌙 Sleep Sounds'], ['sos', '🆘 SOS Calm'], ['mantra', 'LECTURE Mantra'], ['dates', '📅 Dates']]
         .map(([id, l]) => `<button class="chip ${tab === id ? 'on' : ''}" data-t="${id}">${l}</button>`).join('')}
     </div>
     <div id="mtab"></div>
@@ -618,7 +618,7 @@ function drawDateConverter(box) {
       <div class="date-section">
         <div class="date-inputs">
           <select id="eng-year">
-            ${Array.from({length: 100}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
+            ${Array.from({length: 127}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
           </select>
           <select id="eng-month">
             ${englishMonths.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
@@ -637,7 +637,7 @@ function drawDateConverter(box) {
       <div class="date-section">
         <div class="date-inputs">
           <select id="nep-year">
-            ${Array.from({length: 100}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
+            ${Array.from({length: 184}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
           </select>
           <select id="nep-month">
             ${NEPALI_MONTHS.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
