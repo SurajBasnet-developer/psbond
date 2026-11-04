@@ -11,11 +11,17 @@ let malaCount = 0;
 const CIRC = 2 * Math.PI * 60;
 
 const DEFAULT_MANTRAS = [
-  'Om Namaḥ Śivāya',
-  'Om Maṇi Padme Hūṃ',
-  'Hare Kṛṣṇa Hare Kṛṣṇa Kṛṣṇa Kṛṣṇa Hare Hare',
-  'Rāma Rāma Rāma',
-  'Oṃ Gaṃ Gaṇapataye Namaḥ',
+  'ॐ गं गणपतये नमः॥',
+  'ॐ ऐं सरस्वत्यै नमः॥',
+  'ॐ श्रीं महालक्ष्म्यै नमः॥',
+  'ॐ नमो भगवते वासुदेवाय॥',
+  'ॐ कृष्णाय नमः॥',
+  'ॐ नमः शिवाय॥',
+  'ॐ मणिपद्मे हूँ॥',
+  'ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्॥',
+  'ॐ दुं दुर्गायै नमः॥',
+  'ॐ घृणिः सूर्याय नमः॥',
+  'ॐ नमो भगवते वासुदेवाय राधाकृष्णाय नमः॥',
 ];
 
 function getMalaPrefs() {
@@ -333,12 +339,15 @@ function drawMantra(box) {
       .target-input { width: 100px; padding: 6px 8px; border-radius: 8px; border: 1px solid #cbd5e1; text-align: center; font-weight: 700; }
     </style>
     <div class="card" style="border-color:rgba(255,154,107,.35)">
-      <div class="card-title">Morning Mantra — हस्तको दर्शनम्</div>
+      <div class="card-title">Morning Mantra —  दर्शनम्</div>
       <div class="mantra-sanskrit">
         कराग्रे वसते लक्ष्मीः करमध्ये सरस्वती।<br>
-        कराउपस्थे तु गोविन्दः प्रभाते करदर्शनम्।।
-      </div>
-      <div class="small muted center mt-8">Karāgre Vasate Lakṣmīḥ · Karamadhyhe Sarasvatī · Karāupasthite Tu Govindaḥ · Prabhāte Karadarśanam</div>
+        करमूले तु गोविन्दः प्रभाते करदर्शनम्।।
+        </div>
+        <div class="mantra-sanskrit">
+        वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ।<br>
+        निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥
+        </div>
       <div class="center mt-14">
         <button class="btn ${done ? 'secondary' : 'primary'} wide" id="mantra-done">${done ? 'Marked done today ✅' : 'I chanted this morning'}</button>
       </div>
