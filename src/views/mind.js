@@ -4,6 +4,7 @@ import { playAmbient, stopAmbient, chime, beep } from '../modules/audio.js';
 import { addSession, addXP, bumpStat, getSettings, isMantraDone, setMantraDone, addChantSession, get, set, getCustomMantras, addCustomMantra, removeCustomMantra } from '../modules/storage.js';
 import { playWorkout } from '../modules/player.js';
 import { bySection } from '../data/exercises.js';
+import { renderDateConverter } from '../ui/dateConverter.js';
 
 let tab = 'meditate';
 let session = null;
@@ -23,49 +24,6 @@ const DEFAULT_MANTRAS = [
   'ॐ घृणिः सूर्याय नमः॥',
   'ॐ नमो भगवते वासुदेवाय राधाकृष्णाय नमः॥',
 ];
-
-const NEPALI_MONTHS = ['बैशाख','जेष्ठ','अशोज','श्रावण','भाद्र','आषाढ','कट्ट','मंसिर','पौष','माघ','फाल्गुन','चैत'];
-const NEPALI_DAYS = ['सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार','रविवार'];
-const MONTH_LENGTHS = [31,31,31,31,31,30,30,30,30,30,30,30];
-
-function isLeap(y) {
-  return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
-}
-
-function gregorianToNepali(y, m, d) {
-  const base = new Date(2000, 3, 14);
-  const target = new Date(y, m-1, d);
-  let diff = Math.round((target - base) / (1000*60*60*24));
-  let nepaliYear = 2000 + Math.floor(diff / 365);
-  let rem = diff - nepaliYear * 365;
-  let monthIdx = 0;
-  while (rem >= MONTH_LENGTHS[monthIdx]) {
-    rem -= MONTH_LENGTHS[monthIdx];
-    monthIdx++;
-  }
-  const day = rem + 1;
-  return { year: nepaliYear, month: monthIdx+1, day };
-}
-
-function nepaliToGregorian(ny, nm, nd) {
-  let totalDays = 0;
-  if (ny >= 2000) {
-    for (let y = 2000; y < ny; y++) {
-      totalDays += isLeap(y) ? 366 : 365;
-    }
-  } else {
-    for (let y = ny; y < 2000; y++) {
-      totalDays -= isLeap(y) ? 366 : 365;
-    }
-  }
-  for (let m = 0; m < nm-1; m++) {
-    totalDays += MONTH_LENGTHS[m];
-  }
-  totalDays += nd - 1;
-  const base = new Date(2000, 3, 14);
-  const target = new Date(base.getTime() + totalDays * 86400000);
-  return { year: target.getFullYear(), month: target.getMonth()+1, day: target.getDate() };
-}
 
 function getMalaPrefs() {
   return get('malaPrefs', { mantra: DEFAULT_MANTRAS[0], target: 108 });
@@ -593,102 +551,5 @@ function updateMalaUI(target = 108) {
 
 /* ---------------- Date Converter ---------------- */
 function drawDateConverter(box) {
-  const englishMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const englishDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-  box.innerHTML = `
-    <style>
-      .date-section { margin-bottom: 16px; }
-      .date-section h3 { font-size: 18px; margin-bottom: 8px; }
-      .date-inputs { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-      .date-inputs select, .date-inputs input { padding: 6px 8px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; font-size: 14px; }
-      .date-result { background: var(--bg-2, #f8fafc); border: 1px solid var(--border, #e2e8f0); border-radius: 10px; padding: 12px; font-size: 16px; text-align: center; }
-      .date-result b { color: var(--accent, #4f46e5); }
-      .date-actions { margin-top: 8px; }
-      .date-actions button { padding: 6px 12px; border-radius: 8px; border: none; background: var(--accent, #4f46e5); color: #fff; cursor: pointer; font-size: 14px; }
-      .date-actions button.secondary { background: var(--accent-2, #7c3aed); }
-    </style>
-    <div class="card" style="border-color:rgba(157,123,255,.35)">
-      <div class="card-title">Date Converter</div>
-      <div class="small muted mt-8">Convert between English and Nepali calendars.</div>
-    </div>
-
-    <div class="card mt-14" style="border-color:rgba(255,154,107,.35)">
-      <div class="card-title">English → Nepali</div>
-      <div class="date-section">
-        <div class="date-inputs">
-          <select id="eng-year">
-            ${Array.from({length: 127}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
-          </select>
-          <select id="eng-month">
-            ${englishMonths.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
-          </select>
-          <select id="eng-day">
-            ${Array.from({length: 31}, (_, i) => i+1).map(d => `<option value="${d}">${d}</option>`).join('')}
-          </select>
-          <button id="eng-to-nep">Convert</button>
-        </div>
-        <div class="date-result" id="eng-to-nep-result">—</div>
-      </div>
-    </div>
-
-    <div class="card mt-14" style="border-color:rgba(157,123,255,.35)">
-      <div class="card-title">Nepali → English</div>
-      <div class="date-section">
-        <div class="date-inputs">
-          <select id="nep-year">
-            ${Array.from({length: 184}, (_, i) => i + 1900).map(y => `<option value="${y}">${y}</option>`).join('')}
-          </select>
-          <select id="nep-month">
-            ${NEPALI_MONTHS.map((m, i) => `<option value="${i+1}">${m}</option>`).join('')}
-          </select>
-          <select id="nep-day">
-            ${Array.from({length: 31}, (_, i) => i+1).map(d => `<option value="${d}">${d}</option>`).join('')}
-          </select>
-          <button id="nep-to-eng">Convert</button>
-        </div>
-        <div class="date-result" id="nep-to-eng-result">—</div>
-      </div>
-    </div>
-  `;
-
-  const engYear = box.querySelector('#eng-year');
-  const engMonth = box.querySelector('#eng-month');
-  const engDay = box.querySelector('#eng-day');
-  const engResult = box.querySelector('#eng-to-nep-result');
-  const nepYear = box.querySelector('#nep-year');
-  const nepMonth = box.querySelector('#nep-month');
-  const nepDay = box.querySelector('#nep-day');
-  const nepResult = box.querySelector('#nep-to-eng-result');
-
-  const convertEngToNep = () => {
-    const y = +engYear.value;
-    const m = +engMonth.value;
-    const d = +engDay.value;
-    try {
-      const result = gregorianToNepali(y, m, d);
-      engResult.innerHTML = `<b>${result.year} बैशाख ${result.month} ${result.day} को दिन</b>`;
-    } catch (err) {
-      engResult.innerHTML = '<span class="small muted">Invalid date</span>';
-    }
-  };
-
-  const convertNepToEng = () => {
-    const y = +nepYear.value;
-    const m = +nepMonth.value;
-    const d = +nepDay.value;
-    try {
-      const result = nepaliToGregorian(y, m, d);
-      engResult.innerHTML = `<b>${result.year}-${String(result.month).padStart(2,'0')}-${String(result.day).padStart(2,'0')}</b>`;
-    } catch (err) {
-      engResult.innerHTML = '<span class="small muted">Invalid date</span>';
-    }
-  };
-
-  box.querySelector('#eng-to-nep').addEventListener('click', convertEngToNep);
-  box.querySelector('#nep-to-eng').addEventListener('click', convertNepToEng);
-
-  // Initial conversions
-  convertEngToNep();
-  convertNepToEng();
+  renderDateConverter(box);
 }

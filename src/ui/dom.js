@@ -41,6 +41,8 @@ export const ICONS = {
   refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.6M20 3v5h-5"/>',
   lotus: '<path d="M12 20c-2.5-1.5-4-4-4-7 0-3.5 2-6 4-8 2 2 4 4.5 4 8 0 3-1.5 5.5-4 7z"/><path d="M12 20c-4 0-7-2.5-8-6 2.5-.5 5 0 7 1.5M12 20c4 0 7-2.5 8-6-2.5-.5-5 0-7 1.5"/>',
   wind: '<path d="M3 8h9a3 3 0 1 0-3-3M3 12h14a3 3 0 1 1-3 3M3 16h6a2.5 2.5 0 1 1-2.5 2.5"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7 14h.01M12 14h.01M17 14h.01M7 17.5h.01M12 17.5h.01"/>',
+  bookmark: '<path d="M6 3.5h12a.5.5 0 0 1 .5.5v17L12 17l-6.5 4V4a.5.5 0 0 1 .5-.5z"/>',
 };
 
 export function icon(name, cls = '') {

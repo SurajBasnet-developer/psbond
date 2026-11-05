@@ -132,6 +132,134 @@ export function stopAmbient(fade = 0.8) {
   } catch { /* noop */ }
 }
 
+// ---------- meditation melody engine ----------
+let melodyState = null;
+
+export function playMelody(track, volume = 0.55) {
+  stopMelody(0.25);
+  const c = ac();
+  const master = c.createGain();
+  master.gain.value = 0;
+  master.gain.linearRampToValueAtTime(volume, c.currentTime + 1.6);
+  master.connect(c.destination);
+
+  // soft echo for a spacious, temple-like tail
+  const delay = c.createDelay(2.2);
+  delay.delayTime.value = 0.42;
+  const feedback = c.createGain();
+  feedback.gain.value = 0.28;
+  const wet = c.createGain();
+  wet.gain.value = 0.3;
+  delay.connect(feedback).connect(delay);
+  delay.connect(wet).connect(master);
+
+  const nodes = [];
+  const t0 = c.currentTime + 0.08;
+
+  // warm, slowly breathing pad
+  (track.pad || [0, 7, 12]).forEach((semi, i) => {
+    const freq = track.root * Math.pow(2, semi / 12);
+    const o = c.createOscillator();
+    const g = c.createGain();
+    const f = c.createBiquadFilter();
+    o.type = i === 0 ? 'sine' : 'triangle';
+    o.frequency.value = freq;
+    o.detune.value = (i % 2 ? 5 : -5);
+    f.type = 'lowpass';
+    f.frequency.value = 850 + i * 220;
+    g.gain.value = 0;
+    g.gain.linearRampToValueAtTime((track.padVol || 0.07) / (i + 1), t0 + 3);
+    o.connect(f).connect(g);
+    g.connect(master);
+    g.connect(delay);
+    o.start(t0);
+    nodes.push(o, g, f);
+
+    // gentle filter movement so the pad never feels static
+    const lfo = c.createOscillator();
+    const lg = c.createGain();
+    lfo.frequency.value = 0.035 + i * 0.013;
+    lg.gain.value = 140;
+    lfo.connect(lg).connect(f.frequency);
+    lfo.start(t0);
+    nodes.push(lfo, lg);
+  });
+
+  const scale = track.scale || [0, 2, 4, 7, 9, 12, 14, 16];
+  const wave = track.wave || 'sine';
+  let step = 0;
+  let last = -1;
+
+  const pluck = (freq, when, vol, len = 2.6) => {
+    const o = c.createOscillator();
+    const o2 = c.createOscillator();
+    const g = c.createGain();
+    o.type = wave;
+    o2.type = 'sine';
+    o.frequency.value = freq;
+    o2.frequency.value = freq * 2;
+    const g2 = c.createGain();
+    g2.gain.value = 0.22;
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.linearRampToValueAtTime(vol, when + 0.025);
+    g.gain.exponentialRampToValueAtTime(0.0001, when + len);
+    o.connect(g);
+    o2.connect(g2).connect(g);
+    g.connect(master);
+    g.connect(delay);
+    o.start(when); o.stop(when + len + 0.1);
+    o2.start(when); o2.stop(when + len + 0.1);
+  };
+
+  const timer = setInterval(() => {
+    const now = c.currentTime + 0.04;
+    const s = step++;
+    if (Math.random() > (track.density ?? 0.6)) return;
+
+    // walk through the scale, avoiding the same note twice in a row
+    let idx = Math.floor((s * 0.618 + Math.random() * 0.4) * scale.length) % scale.length;
+    if (idx === last) idx = (idx + 2) % scale.length;
+    last = idx;
+    const octave = Math.random() < 0.22 ? 12 : 0;
+    const freq = track.root * 2 * Math.pow(2, (scale[idx] + octave) / 12);
+    pluck(freq, now, (track.pluckVol || 0.1) * (0.7 + Math.random() * 0.35));
+
+    // occasional high bell makes the melody feel alive
+    if (s % 9 === 4) {
+      pluck(track.root * 4 * Math.pow(2, scale[(idx + 3) % scale.length] / 12), now + 0.08, 0.045, 3.4);
+    }
+  }, track.stepMs || 700);
+
+  melodyState = { id: track.id, timer, master, delay, nodes };
+  return () => stopMelody();
+}
+
+export function setMelodyVolume(value) {
+  if (!melodyState) return;
+  try { melodyState.master.gain.setTargetAtTime(Math.max(0, Math.min(1, value)), ac().currentTime, 0.08); } catch { /* noop */ }
+}
+
+export function isMelodyPlaying(id) {
+  return !!melodyState && (!id || melodyState.id === id);
+}
+
+export function stopMelody(fade = 0.7) {
+  if (!melodyState) return;
+  const { timer, master, delay, nodes } = melodyState;
+  melodyState = null;
+  clearInterval(timer);
+  try {
+    const c = ac();
+    master.gain.cancelScheduledValues(c.currentTime);
+    master.gain.setValueAtTime(master.gain.value, c.currentTime);
+    master.gain.linearRampToValueAtTime(0.0001, c.currentTime + fade);
+    setTimeout(() => {
+      nodes.forEach(n => { try { n.stop?.(); } catch { /* noop */ } });
+      try { master.disconnect(); delay.disconnect(); } catch { /* noop */ }
+    }, fade * 1000 + 120);
+  } catch { /* noop */ }
+}
+
 // ---------- dance beat engine ----------
 let beat = null;
 

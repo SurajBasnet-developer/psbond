@@ -3,7 +3,7 @@ import './styles.css';
 import { registerSW } from 'virtual:pwa-register';
 import { el, icon } from './ui/dom.js';
 import { getSettings } from './modules/storage.js';
-import { unlockAudio } from './modules/audio.js';
+import { unlockAudio, stopMelody } from './modules/audio.js';
 
 registerSW({ immediate: true });
 
@@ -53,6 +53,9 @@ const SIDE_EXTRA = [
   { id: 'motivation', label: 'Motivation', icon: 'sparkle' },
   { id: 'care', label: 'Care', icon: 'heart' },
   { id: 'library', label: 'Library', icon: 'book' },
+  { id: 'books', label: 'Book Summaries', icon: 'book' },
+  { id: 'melodies', label: 'Melodies', icon: 'music' },
+  { id: 'dates', label: 'Date Converter', icon: 'calendar' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
@@ -71,9 +74,9 @@ function renderMore(v) {
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', care: '💞', library: '📚', settings: '⚙️' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', settings: '⚙️' }[r.id]}</div>
           <div style="font-weight:800" class="mt-8">${r.label}</div>
-          <div class="small muted">${{ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', care: 'Relationships & gratitude', library: 'All exercises A–Z', settings: 'Profile, theme, install' }[r.id]}</div>
+          <div class="small muted">${{ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', settings: 'Profile, theme, install' }[r.id]}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>
@@ -91,6 +94,7 @@ async function route() {
   const params = Object.fromEntries(new URLSearchParams(query || ''));
 
   cleanup?.();
+  stopMelody();
   const { stopSession } = await import('./views/mind.js');
   stopSession();
   view._figs?.forEach(f => f.destroy());
