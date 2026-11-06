@@ -1,9 +1,10 @@
 // BiggerBody — app bootstrap, router and navigation.
 import './styles.css';
 import { registerSW } from 'virtual:pwa-register';
-import { el, icon } from './ui/dom.js';
-import { getSettings } from './modules/storage.js';
+import { el, icon, esc, toast } from './ui/dom.js';
+import { getSettings, saveSettings } from './modules/storage.js';
 import { unlockAudio, stopMelody } from './modules/audio.js';
+import { t, setLang, applyChrome } from './i18n.js';
 
 registerSW({ immediate: true });
 
@@ -41,6 +42,29 @@ const view = document.getElementById('view');
 const nav = document.getElementById('nav');
 const sidebar = document.getElementById('sidebar');
 
+// ---------- quick language toggle (English ⇄ नेपाली) ----------
+// Floating EN | ने pill so Nepali is always one tap away, no Settings trip needed.
+const langBtn = el(`
+  <div id="lang-toggle" class="mini-lang" role="group" aria-label="Switch language / भाषा बदल्नुहोस्">
+    <button class="seg" data-lang="en">EN</button><button class="seg" data-lang="ne">ने</button>
+  </div>`);
+document.body.appendChild(langBtn);
+function paintLangBtn() {
+  const cur = getSettings().lang || 'en';
+  langBtn.querySelectorAll('.seg').forEach(s => s.classList.toggle('on', s.dataset.lang === cur));
+}
+paintLangBtn();
+document.addEventListener('bb-lang', paintLangBtn);
+langBtn.addEventListener('click', e => {
+  const seg = e.target.closest('.seg');
+  if (!seg || seg.dataset.lang === (getSettings().lang || 'en')) return;
+  saveSettings({ lang: seg.dataset.lang });
+  setLang(seg.dataset.lang);
+  applyChrome();
+  toast(t('Language changed ✅'));
+  route();
+});
+
 const ROUTES = [
   { id: 'home', label: 'Home', icon: 'home' },
   { id: 'workouts', label: 'Train', icon: 'train' },
@@ -56,10 +80,12 @@ const SIDE_EXTRA = [
   { id: 'books', label: 'Book Summaries', icon: 'book' },
   { id: 'melodies', label: 'Melodies', icon: 'music' },
   { id: 'dates', label: 'Date Converter', icon: 'calendar' },
+  { id: 'ghargym', label: 'GharGym', icon: 'home' },
+  { id: 'fasting', label: 'Fast & Fest', icon: 'lotus' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
-const navLink = r => `<a href="#/${r.id}" data-route="${r.id}">${icon(r.icon)}<span>${r.label}</span></a>`;
+const navLink = r => `<a href="#/${r.id}" data-route="${r.id}">${icon(r.icon)}<span>${esc(t(r.label))}</span></a>`;
 nav.innerHTML = ROUTES.map(navLink).join('');
 sidebar.innerHTML = `
   <div class="brand"><img src="/icons/logo-512.png"> BiggerBody</div>
@@ -70,13 +96,13 @@ sidebar.innerHTML = `
 // "More" view aggregates secondary sections
 function renderMore(v) {
   v.innerHTML = `
-    <div class="header"><div class="brand">${icon('grid')} More</div></div>
+    <div class="header"><div class="brand">${icon('grid')} ${esc(t('More'))}</div></div>
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', settings: '⚙️' }[r.id]}</div>
-          <div style="font-weight:800" class="mt-8">${r.label}</div>
-          <div class="small muted">${{ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', settings: 'Profile, theme, install' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
+          <div style="font-weight:800" class="mt-8">${esc(t(r.label))}</div>
+          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>
@@ -115,7 +141,7 @@ async function route() {
     mod.render(view, params);
   } catch (err) {
     console.error(err);
-    view.innerHTML = `<div class="empty"><div class="e">😅</div>Something went wrong loading this page.<br><span class="small">${err.message}</span></div>`;
+    view.innerHTML = `<div class="empty"><div class="e">😅</div>${esc(t('Something went wrong loading this page.'))}<br><span class="small">${err.message}</span></div>`;
   }
 }
 

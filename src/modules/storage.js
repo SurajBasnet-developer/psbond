@@ -74,7 +74,7 @@ const isActive = day => day && (day.sessions > 0 || day.min > 0);
 // ---------- settings ----------
 export const DEFAULT_SETTINGS = {
   name: '', theme: 'dark', gender: 'male', voice: true, sfx: true,
-  keepAwake: true, waterRemind: false, haptics: true,
+  keepAwake: true, waterRemind: false, haptics: true, lang: 'en',
 };
 export function getSettings() { return { ...DEFAULT_SETTINGS, ...get('settings', {}) }; }
 export function saveSettings(patch) { set('settings', { ...getSettings(), ...patch }); }
@@ -140,6 +140,40 @@ export function removeCustomMantra(text) {
   return arr;
 }
 
+// ---------- GharGym (household equipment gym) ----------
+export function getGharDone(k = dayKey()) { return get('gharDone', {})[k] || {}; }
+export function markGharDone(id) {
+  const m = get('gharDone', {});
+  const k = dayKey();
+  m[k] = m[k] || {};
+  if (m[k][id]) return false;
+  m[k][id] = true;
+  set('gharDone', m);
+  bumpStat('gharGym');
+  addXP(8);
+  return true;
+}
+
+// ---------- fasting ----------
+// fastState: { [dayKey]: { on: true } } — manual "I am fasting today" marks.
+export function getFastState() { return get('fastState', {}); }
+export function toggleFastToday(on = null) {
+  const st = getFastState();
+  const k = dayKey();
+  st[k] = { ...(st[k] || {}), on: on === null ? !st[k]?.on : !!on };
+  set('fastState', st);
+  return st[k].on;
+}
+// fastPatterns: array of weekday indexes (0–6) kept as personal weekly fasts.
+export function getFastPatterns() { return get('fastPatterns', []); }
+export function toggleFastPattern(dow) {
+  const p = getFastPatterns();
+  const i = p.indexOf(dow);
+  if (i >= 0) p.splice(i, 1); else p.push(dow);
+  set('fastPatterns', p.slice().sort((a, b) => a - b));
+  return p.includes(dow);
+}
+
 // ---------- challenges ----------
 export function getChallengeState() {
   return get('challenge', {});
@@ -157,7 +191,7 @@ export function completeChallenge(xp) {
 // ---------- export ----------
 export function exportData() {
   const dump = {};
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras'].forEach(k => { dump[k] = get(k); });
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns'].forEach(k => { dump[k] = get(k); });
   const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -167,5 +201,5 @@ export function exportData() {
 }
 
 export function resetAll() {
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras'].forEach(del);
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns'].forEach(del);
 }

@@ -83,6 +83,24 @@ a { color: inherit; text-decoration: none; }
 .icon-btn:active { transform: scale(.92); }
 .icon-btn svg { width: 20px; height: 20px; }
 
+/* Floating quick language toggle — English ⇄ नेपाली */
+.mini-lang {
+  position: fixed; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 55;
+  display: flex; gap: 2px; padding: 3px;
+  background: rgba(13, 18, 32, .82); border: 1px solid var(--border);
+  border-radius: 999px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+[data-theme="light"] .mini-lang { background: rgba(255, 255, 255, .88); }
+.mini-lang .seg {
+  padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 800;
+  color: var(--muted); letter-spacing: .5px; line-height: 1.2;
+  transition: all .2s ease;
+}
+.mini-lang .seg:active { transform: scale(.92); }
+.mini-lang .seg.on { background: var(--grad); color: #1a0b10; box-shadow: 0 4px 14px rgba(255, 94, 125, .35); }
+@media (min-width: 980px) { .mini-lang { right: 24px; top: 20px; } }
+
 /* ============ Cards & layout bits ============ */
 .card {
   background: var(--surface);
