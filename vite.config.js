@@ -34,7 +34,21 @@ export default defineConfig({
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        skipWaiting: true
+        skipWaiting: true,
+        runtimeCaching: [
+          {
+            // news feed/proxy calls — keep the last good payload around
+            urlPattern: /jina\.ai|allorigins\.win|codetabs\.com|rss2json\.com|corsproxy\.io/,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'bb-news-api', expiration: { maxEntries: 40, maxAgeSeconds: 86400 * 3 }, networkTimeoutSeconds: 14 },
+          },
+          {
+            // article + thumbnail images from the portals
+            urlPattern: ({ request, url }) => request.destination === 'image' && !url.origin.includes(self?.location?.hostname ?? '__none__'),
+            handler: 'CacheFirst',
+            options: { cacheName: 'bb-news-img', expiration: { maxEntries: 60, maxAgeSeconds: 86400 * 14 }, cacheableResponse: { statuses: [0, 200] } },
+          },
+        ],
       }
     })
   ],

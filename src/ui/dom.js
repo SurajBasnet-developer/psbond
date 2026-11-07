@@ -43,6 +43,8 @@ export const ICONS = {
   wind: '<path d="M3 8h9a3 3 0 1 0-3-3M3 12h14a3 3 0 1 1-3 3M3 16h6a2.5 2.5 0 1 1-2.5 2.5"/>',
   calendar: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7 14h.01M12 14h.01M17 14h.01M7 17.5h.01M12 17.5h.01"/>',
   bookmark: '<path d="M6 3.5h12a.5.5 0 0 1 .5.5v17L12 17l-6.5 4V4a.5.5 0 0 1 .5-.5z"/>',
+  news: '<rect x="3.2" y="4.5" width="14.6" height="15.8" rx="2.4"/><path d="M6.8 8.7h7.4M6.8 11.9h7.4M6.8 15h4.6"/><path d="M17.8 9.2h2.2a1 1 0 0 1 1 1v8.4a2.7 2.7 0 0 1-2.7 2.7H15"/>',
+  open: '<path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 13.5v5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H11"/>',
 };
 
 export function icon(name, cls = '') {

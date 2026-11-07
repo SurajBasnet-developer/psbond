@@ -75,6 +75,7 @@ const ROUTES = [
 const SIDE_EXTRA = [
   { id: 'dance', label: 'Dance', icon: 'music' },
   { id: 'motivation', label: 'Motivation', icon: 'sparkle' },
+  { id: 'news', label: 'News', icon: 'news' },
   { id: 'care', label: 'Care', icon: 'heart' },
   { id: 'library', label: 'Library', icon: 'book' },
   { id: 'books', label: 'Book Summaries', icon: 'book' },
@@ -100,9 +101,9 @@ function renderMore(v) {
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
           <div style="font-weight:800" class="mt-8">${esc(t(r.label))}</div>
-          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
+          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>
