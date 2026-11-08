@@ -36,6 +36,7 @@ export const ROUTE_LABEL = {
   home: 'Home', train: 'Train', mind: 'Mind', progress: 'Progress', more: 'More',
   dance: 'Dance', motivation: 'Motivation', news: 'News', care: 'Care', library: 'Library',
   books: 'Book Summaries', melodies: 'Melodies', dates: 'Date Converter',
+  calendar: 'Calendar',
   ghargym: 'GharGym', fasting: 'Fast & Fest', settings: 'Settings',
 };
 
@@ -253,6 +254,29 @@ const NE = {
   'Fasting mode ON — take it light today 🙏': 'व्रत मोड अन — आज हल्कै गर्नुहोस् 🙏',
   'Fasting mode off — full sessions back': 'व्रत मोड अफ — पूरा सेसन फर्कियो',
   'weekly · {0}': 'साप्ताहिक · {0}',
+
+  // ---- calendar (patro) ----
+  'Calendar': 'पात्रो',
+  'Nepali patro — festivals & holidays': 'नेपाली पात्रो — पर्व र बिदा',
+  'Today': 'आज',
+  'This month': 'यो महिनामा',
+  'Regular day': 'सामान्य दिन',
+  'Public holiday': 'सर्वजनिक बिदा',
+  'Weekly holiday': 'साप्ताहिक बिदा',
+  'Saturday — weekly holiday': 'शनिबार — साप्ताहिक बिदा',
+  'Holiday': 'बिदा',
+  'National': 'राष्ट्रिय',
+  'National / holiday': 'राष्ट्रिय / बिदा',
+  'Festival': 'पर्व',
+  'Fast': 'व्रत',
+  'International': 'अन्तर्राष्ट्रिय',
+  'Select month': 'महिना रोज्नुहोस्',
+  'Select year': 'वर्ष रोज्नुहोस्',
+  'verified': 'जाँचियो',
+  'No events on this day': 'यो दिन कुनै पर्व छैन',
+  'This month has no recorded events — Saturdays are still weekly holidays.': 'यो महिनामा दर्ता पर्व छैन — शनिबार भने साप्ताहिक बिदा नै हो।',
+  'Saturday is the weekly public holiday of Nepal.': 'नेपालमा साप्ताहिक सर्वजनिक बिदा शनिबार हो।',
+  'Lunar festival dates shift every year — BS 2083 (Apr 2026 – Apr 2027) is fully verified. Other years show fixed days & weekly holidays only.': 'चन्द्र-पर्वका मिति हरेक वर्ष सर्छन् — वि.सं. २०८३ (अप्रि २०२६ – अप्रि २०२७) पूर्ण जाँचिएको छ। अन्य वर्षमा निश्चित दिन र साप्ताहिक बिदा मात्र देखिन्छन्।',
 
   // ---- day-guide level labels (from data/fests.js) ----
   '🥗 Light training okay': '🥗 हल्का तालिम ठीक',

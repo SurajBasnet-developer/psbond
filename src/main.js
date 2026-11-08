@@ -81,6 +81,7 @@ const SIDE_EXTRA = [
   { id: 'books', label: 'Book Summaries', icon: 'book' },
   { id: 'melodies', label: 'Melodies', icon: 'music' },
   { id: 'dates', label: 'Date Converter', icon: 'calendar' },
+  { id: 'calendar', label: 'Calendar', icon: 'calendar' },
   { id: 'ghargym', label: 'GharGym', icon: 'home' },
   { id: 'fasting', label: 'Fast & Fest', icon: 'lotus' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
@@ -101,9 +102,9 @@ function renderMore(v) {
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', calendar: '🗓️', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
           <div style="font-weight:800" class="mt-8">${esc(t(r.label))}</div>
-          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
+          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', calendar: 'Nepali patro — festivals & holidays', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>
