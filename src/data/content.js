@@ -226,6 +226,8 @@ export const ACHIEVEMENTS = [
   { id: 'water7', e: '💧', n: 'Hydration Hero', d: 'Hit water goal 7 days' },
   { id: 'kcal1k', e: '🔥', n: 'Torch Master', d: 'Burn 1,000 total kcal' },
   { id: 'min120', e: '⏱️', n: 'Two Hour Club', d: '120 total active minutes' },
+  { id: 'step1k', e: '👟', n: 'First 1K', d: '1,000 total steps counted' },
+  { id: 'step10k', e: '🏆', n: 'Step Champion', d: '10,000 steps in a single day' },
 ];
 
 export const LEVELS = [
@@ -245,7 +247,8 @@ export const PREMIUM_FEATURES = [
   ['💃', 'Dance workouts', 'Cardio disguised as fun, with a built-in beat engine.'],
   ['💚', 'Mind-care section', 'Gentle routines designed for low-mood and anxious days.'],
   ['📊', 'Progress analytics', '14-day charts, streak calendar, calories and minutes tracked.'],
-  ['🏆', '12 achievements', 'Badges that celebrate every milestone on your journey.'],
+  ['🏃', 'Step counter', 'An offline pedometer — count steps from your phone\'s motion sensor toward a daily goal, with distance & calories.'],
+  ['🏆', '14 achievements', 'Badges that celebrate every milestone on your journey.'],
   ['⚡', 'XP & levels', 'Rookie to Titan — every minute counts toward your rank.'],
   ['🎯', 'Daily challenges', 'A fresh micro-goal every day to keep momentum alive.'],
   ['💧', 'Hydration tracker', '8-glass daily tracker with gentle reminders.'],

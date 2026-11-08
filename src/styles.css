@@ -852,3 +852,29 @@ a { color: inherit; text-decoration: none; }
   .cal-big { font-size: 56px; }
   .pato-cell .dn { font-size: 18px; }
 }
+
+/* ============ Step counter (pedometer) ============ */
+.step-ring {
+  width: 92px; height: 92px; border-radius: 50%; flex: none; position: relative;
+  background: conic-gradient(from -90deg, #ff9a6b 0%, #ff5e7d var(--p, 0%), var(--surface-2) var(--p, 0%) 100%);
+  transition: background .4s ease;
+}
+.step-ring::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--bg); }
+.step-ring .in { position: relative; text-align: center; line-height: 1.05; }
+.step-ring .in b { display: block; font-size: 19px; font-weight: 800; }
+.step-ring .in small { display: block; font-size: 10px; font-weight: 700; color: var(--muted); margin-top: 2px; letter-spacing: .3px; }
+#steps-card.counting .step-ring::after {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%;
+  border: 2px solid rgba(255, 94, 125, .4);
+  animation: stepPulse 1.5s ease-out infinite;
+}
+@keyframes stepPulse {
+  0% { transform: scale(.94); opacity: .8; }
+  70% { transform: scale(1.07); opacity: 0; }
+  100% { transform: scale(1.07); opacity: 0; }
+}
+.step-manual input { flex: 1; min-width: 0; padding: 11px 14px; border-radius: 13px; border: 1px solid var(--border); background: var(--surface); color: var(--text); outline: none; }
+.step-manual input:focus { border-color: var(--accent-2); }
+.step-manual .btn { padding: 11px 16px; }
+.step-manual { align-items: stretch; }
+.mt-10 { margin-top: 10px; }

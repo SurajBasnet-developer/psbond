@@ -75,6 +75,7 @@ const isActive = day => day && (day.sessions > 0 || day.min > 0);
 export const DEFAULT_SETTINGS = {
   name: '', theme: 'dark', gender: 'male', voice: true, sfx: true,
   keepAwake: true, waterRemind: false, haptics: true, lang: 'en',
+  stepGoal: 8000, stride: 0.7,   // pedometer: daily steps & stride length (m)
 };
 export function getSettings() { return { ...DEFAULT_SETTINGS, ...get('settings', {}) }; }
 export function saveSettings(patch) { set('settings', { ...getSettings(), ...patch }); }
@@ -188,10 +189,37 @@ export function completeChallenge(xp) {
   return true;
 }
 
+// ---------- steps (offline pedometer) ----------
+// One running total per day. The engine adds into it live while counting,
+// manual entry uses the same path. Milestones (halfway, goal) are tracked as
+// 'bb.stepFlags' so the +10 XP goal bonus can't be re-farmed within a day.
+export function getSteps(k = dayKey()) { return get('steps', {})[k] || 0; }
+export function getStepGoal() { return getSettings().stepGoal || 8000; }
+export function getStride() { return getSettings().stride || 0.7; }
+export function setSteps(n, k = dayKey()) {
+  const s = get('steps', {});
+  s[k] = Math.max(0, Math.round(n));
+  set('steps', s);
+  return s[k];
+}
+export function addSteps(n, k = dayKey()) { return setSteps(getSteps(k) + Math.round(n), k); }
+export function stepStats() {
+  const s = get('steps', {});
+  let total = 0, best = 0;
+  for (const v of Object.values(s)) { total += v; if (v > best) best = v; }
+  return { total, best };
+}
+// distance (km) & energy estimate for a step count — walking ≈ 1 kcal/kg/km
+export function stepsToKm(steps) { return (steps * getStride()) / 1000; }
+export function stepsToKcal(km) {
+  const weight = getSettings().bmiW || 65;
+  return Math.round(weight * km);
+}
+
 // ---------- export ----------
 export function exportData() {
   const dump = {};
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns'].forEach(k => { dump[k] = get(k); });
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(k => { dump[k] = get(k); });
   const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -201,5 +229,5 @@ export function exportData() {
 }
 
 export function resetAll() {
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns'].forEach(del);
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(del);
 }

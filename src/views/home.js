@@ -1,7 +1,9 @@
 // Home — greeting, streak, quote of the day, daily challenge, quick programs, water.
 import { el, icon, toast, esc } from '../ui/dom.js';
 import { createFigure } from '../ui/figure.js';
-import { getSettings, getStreak, getXP, levelInfo, todayLog, getWater, setWater, getChallengeState, completeChallenge, getStats } from '../modules/storage.js';
+import { getSettings, getStreak, getXP, levelInfo, todayLog, getWater, setWater, getChallengeState, completeChallenge, getStats, getSteps, getStepGoal, stepsToKm, stepsToKcal } from '../modules/storage.js';
+import * as ped from '../modules/pedometer.js';
+import { recordSteps } from '../modules/pedometer.js';
 import { getDailyQuote } from '../modules/quotes.js';
 import { PROGRAMS, CHALLENGES } from '../data/content.js';
 import { dayKey } from '../modules/storage.js';
@@ -22,6 +24,8 @@ export function render(view) {
   const challenge = CHALLENGES[Math.abs([...dayKey()].reduce((a, c) => a + c.charCodeAt(0), 0)) % CHALLENGES.length];
   const chDone = getChallengeState()[dayKey()]?.done;
   const water = getWater();
+  const stepGoal = getStepGoal();
+  const fmtInt = n => (n || 0).toLocaleString('en');
 
   const featured = ['m-full', 'f-slim', 'd-latin', 'x-calm-morning'].map(id => PROGRAMS.find(p => p.id === id));
 
@@ -91,6 +95,30 @@ export function render(view) {
       <div class="glasses">
         ${Array.from({ length: 8 }, (_, i) => `<div class="glass ${i < water ? 'full' : ''}" data-i="${i}"></div>`).join('')}
       </div>
+    </div>
+
+    <div class="section-title">${t('Step counter')}</div>
+    <div class="card" id="steps-card">
+      <div class="row" style="gap:14px;align-items:center">
+        <div class="step-ring" id="step-ring" style="--p:0%">
+          <div class="in"><b id="step-count">0</b><small id="step-goal-mini">${fmtInt(stepGoal)}</small></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="row between" style="align-items:center">
+            <div style="min-width:0">
+              <div style="font-weight:800" id="step-sub"></div>
+              <div class="small muted" id="step-meta" style="margin-top:3px"></div>
+            </div>
+            <button class="btn primary" id="step-btn">${t('Start')}</button>
+          </div>
+          <div class="mt-10"><button class="btn ghost" id="step-manual-toggle" style="padding:7px 12px;font-size:13px">＋ ${t('Add manually')}</button></div>
+          <div class="row mt-10 step-manual" id="step-manual" hidden>
+            <input id="step-input" type="number" inputmode="numeric" min="0" placeholder="${t('Steps walked (e.g. 4000)')}">
+            <button class="btn" id="step-add">${t('Add')}</button>
+          </div>
+        </div>
+      </div>
+      <div class="small muted mt-10" id="step-hint">${t('Tap Start and walk with the phone in pocket or hand — the sensor counts each step. The app keeps the screen awake.')}</div>
     </div>
 
     <div class="grid-2 mt-14">
@@ -171,6 +199,78 @@ export function render(view) {
     applyWater(getWater() === i + 1 ? i : i + 1); // fill up to it — tap the newest full one to empty it
   }));
   waterAdd.addEventListener('click', () => applyWater(getWater() + 1));
+
+  // ---------- steps (pedometer) ----------
+  // Engine is a module singleton: it keeps counting across route changes and
+  // every paint below just re-reads storage, like the water card does.
+  const card = view.querySelector('#steps-card');
+  const ring = view.querySelector('#step-ring');
+  const stepCount = view.querySelector('#step-count');
+  const stepSub = view.querySelector('#step-sub');
+  const stepMeta = view.querySelector('#step-meta');
+  const stepBtn = view.querySelector('#step-btn');
+  const manualRow = view.querySelector('#step-manual');
+  const manualToggle = view.querySelector('#step-manual-toggle');
+  const stepInput = view.querySelector('#step-input');
+  const stepAdd = view.querySelector('#step-add');
+
+  const paintSteps = (st = ped.status()) => {
+    const n = getSteps();
+    const pct = Math.min(100, Math.round((n / stepGoal) * 100));
+    if (card) card.classList.toggle('counting', !!st.counting);
+    ring.style.setProperty('--p', pct + '%');
+    stepCount.textContent = fmtInt(n);
+    stepSub.textContent = t('{0} of {1} steps', fmtInt(n), fmtInt(stepGoal));
+    const km = stepsToKm(n);
+    stepMeta.textContent = `${km.toFixed(2)} km · ~${stepsToKcal(km)} kcal`;
+    if (st.counting) {
+      stepBtn.textContent = t('Stop');
+      stepBtn.classList.add('danger');
+      stepBtn.classList.remove('primary');
+    } else {
+      stepBtn.textContent = t('Start');
+      stepBtn.classList.remove('danger');
+      stepBtn.classList.add('primary');
+    }
+    // no live sensor (or permission failed earlier) — give up the button, open manual
+    if (!st.supported || st.missing || st.denied) {
+      stepBtn.hidden = true;
+      manualRow.hidden = false;
+    }
+  };
+
+  const manualReady = () => { if (manualRow.hidden) { manualRow.hidden = false; stepInput.focus(); } };
+  manualToggle.addEventListener('click', manualReady);
+
+  stepBtn.addEventListener('click', async () => {
+    if (ped.isCounting()) {
+      const steps = ped.stop();
+      toast(t('Counting stopped · {0} steps this session 🚶', fmtInt(steps)));
+      paintSteps();
+      return;
+    }
+    await ped.start();
+    paintSteps();
+  });
+
+  const applyManual = () => {
+    const n = Math.max(0, Math.min(50000, Math.round(+stepInput.value || 0)));
+    if (!n) return;
+    recordSteps(n);
+    toast(t('Steps added 👟'));
+    stepInput.value = '';
+  };
+  stepAdd.addEventListener('click', applyManual);
+  stepInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyManual(); });
+
+  paintSteps();
+  // Subscription self-dismantles once this Home view leaves the DOM.
+  let unsub;
+  const refresh = () => {
+    if (!card?.isConnected) { unsub?.(); return; }
+    paintSteps();
+  };
+  unsub = ped.subscribe(refresh);
 
   view.querySelectorAll('[data-go]').forEach(n => n.addEventListener('click', () => {
     location.hash = `#/${n.dataset.go}`;

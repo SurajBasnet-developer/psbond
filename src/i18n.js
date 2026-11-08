@@ -290,4 +290,19 @@ const NE = {
   'Divine Melodies': 'दिव्य धुनहरू',
   'Beat Studio 🎧': 'बीट स्टुडियो 🎧',
   '{0}+ exercises · always growing': '{0}+ व्यायाम · झन् झन् थपिँदै',
+
+  // ---- steps (offline pedometer) ----
+  'Step counter': 'कदम काउन्टर',
+  '{0} of {1} steps': '{1} मध्ये {0} कदम',
+  'Start': 'सुरु',
+  'Stop': 'रोक्नुहोस्',
+  'Add manually': 'आफैं थप्नुहोस्',
+  'Steps walked (e.g. 4000)': 'हिँडिएका कदम (जस्तै ४०००)',
+  'Tap Start and walk with the phone in pocket or hand — the sensor counts each step. The app keeps the screen awake.': 'सुरु थिचेर खल्ती वा हातमा फोन राखी हिँड्नुहोस् — सेन्सरले हरेक कदम गन्छ। एपले स्क्रिन बल्याउँदै राख्छ।',
+  'Counting stopped · {0} steps this session 🚶': 'गणना रोकियो · यो सेसनमा {0} कदम 🚶',
+  'Steps added 👟': 'कदम थपियो 👟',
+  'No motion sensor on this device — add steps manually.': 'यो उपकरणमा मोसन सेन्सर छैन — आफैं कदम थप्नुहोस्।',
+  'Motion permission denied — you can add steps manually.': 'मोसन सेन्सरको अनुमति भएन — आफैं कदम थप्न सकिन्छ।',
+  'Halfway to your step goal! 🚶': 'कदम लक्ष्यको आधा बाटो पुगियो! 🚶',
+  'Step goal reached! +10 XP 👟': 'कदम लक्ष्य पुग्यो! +10 XP 👟',
 };

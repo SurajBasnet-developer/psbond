@@ -1,7 +1,7 @@
 // Progress — analytics, streak calendar, achievements, level, water, BMI, export.
 import { el, icon, toast } from '../ui/dom.js';
 import { barChart, streakCalendar } from '../ui/charts.js';
-import { getLog, getStats, getStreak, getXP, levelInfo, getWater, setWater, exportData, getSettings, saveSettings, dayKey } from '../modules/storage.js';
+import { getLog, getStats, getStreak, getXP, levelInfo, getWater, setWater, exportData, getSettings, saveSettings, dayKey, getSteps, stepStats, getStepGoal, stepsToKm } from '../modules/storage.js';
 import { ACHIEVEMENTS, LEVELS } from '../data/content.js';
 
 export function render(view) {
@@ -11,17 +11,22 @@ export function render(view) {
   const lvl = levelInfo();
   const water = getWater();
   const settings = getSettings();
+  const fmtInt = n => (n || 0).toLocaleString('en');
 
   // last 14 days
   const days = [], labels = [], values = [];
+  const stepValues = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date(); d.setDate(d.getDate() - i);
     const k = dayKey(d);
     days.push(log[k]?.min || 0);
+    stepValues.push(getSteps(k));
     labels.push(d.getDate() === today() ? '•' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()]);
   }
   function today() { return new Date().getDate(); }
   const weekMin = days.slice(-7).reduce((a, b) => a + b, 0);
+  const weekSteps = stepValues.slice(-7).reduce((a, b) => a + b, 0);
+  const st = stepStats();
 
   const won = new Set(checkAchievements());
   const nextLevel = LEVELS[lvl.index + 1];
@@ -42,6 +47,20 @@ export function render(view) {
     <div class="section-title">Last 14 days (minutes)</div>
     <div class="card">${barChart(values, labels)}
       <div class="row between small muted mt-8"><span>This week: <b style="color:var(--text)">${weekMin} min</b></span><span>Total: <b style="color:var(--text)">${stats.min} min</b></span></div>
+    </div>
+
+    <div class="section-title">Steps (last 14 days)</div>
+    <div class="card">${barChart(stepValues, labels)}
+      <div class="row between small muted mt-8">
+        <span>This week: <b style="color:var(--text)">${fmtInt(weekSteps)} steps · ~${stepsToKm(weekSteps).toFixed(1)} km</b></span>
+        <span>Total: <b style="color:var(--text)">${fmtInt(st.total)}</b> · best day <b style="color:var(--text)">${fmtInt(st.best)}</b></span>
+      </div>
+      <div class="grid-2 mt-14">
+        <div class="field"><label>Daily step goal</label><input id="step-goal" type="number" inputmode="numeric" min="1000" step="500" value="${getStepGoal()}"></div>
+        <div class="field"><label>Stride length (m)</label><input id="step-stride" type="number" inputmode="decimal" min="0.3" max="1.2" step="0.05" value="${settings.stride || 0.7}"></div>
+      </div>
+      <button class="btn wide" id="step-save">Save step settings</button>
+      <div class="small muted mt-8 center">Counted live from your phone's motion sensor — see Home.</div>
     </div>
 
     <div class="section-title">Consistency calendar</div>
@@ -110,6 +129,15 @@ export function render(view) {
   });
 
   view.querySelector('#export-btn').addEventListener('click', () => { exportData(); toast('Backup downloaded 📦'); });
+
+  // step goal & stride
+  view.querySelector('#step-save').addEventListener('click', () => {
+    const goal = Math.max(1000, Math.min(50000, Math.round(+view.querySelector('#step-goal').value || 8000)));
+    const stride = Math.max(0.3, Math.min(1.2, +view.querySelector('#step-stride').value || 0.7));
+    saveSettings({ stepGoal: goal, stride });
+    toast('Step settings saved ✅');
+    render(view);
+  });
 }
 
 function checkAchievements() {
@@ -130,6 +158,9 @@ function checkAchievements() {
   if (s.waterPerfect >= 7) won.push('water7');
   if (s.kcal >= 1000) won.push('kcal1k');
   if (s.min >= 120) won.push('min120');
+  const steps = stepStats();
+  if (steps.total >= 1000) won.push('step1k');
+  if (steps.best >= 10000) won.push('step10k');
   return won;
 }
 
