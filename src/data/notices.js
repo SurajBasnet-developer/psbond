@@ -11,14 +11,14 @@ export const ADMIN_ROUTE = 'bb-admin-su7xkq92r4m8';
 // fields: id (unique), emoji, type (info | good | warn | love),
 // title, body, from / to ('YYYY-MM-DD', empty = forever), cta (optional).
 export const NOTICES = [
-  {
-    id: 'n-2026-11-09-sky',
-    emoji: '🌤️',
-    type: 'good',
-    title: 'Your sky just came alive!',
-    body: 'The weather card on Home now paints living scenes — glowing suns, drifting clouds, dancing rain and lightning you can feel. Pick your exact district in Settings → Weather.',
-    from: '2026-11-09',
-    to: '2026-12-31',
-    cta: { label: 'Choose your district', go: 'settings' },
+   {
+    id: "n-2026-11-09-36kqp",
+    emoji: "📣",
+    type: "good",
+    title: "all feature added",
+    body: "some beautiful features are added check",
+    from: '',
+    to: '',
+    cta: { label: "Try it now", go: "settings" },
   },
 ];
