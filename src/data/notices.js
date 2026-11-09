@@ -19,6 +19,6 @@ export const NOTICES = [
     body: "some beautiful features are added check",
     from: '',
     to: '',
-    cta: { label: "Try it now", go: "settings" },
+    cta: { label: "Try it now", go: "weather" },
   },
 ];
