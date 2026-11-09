@@ -1090,3 +1090,54 @@ a { color: inherit; text-decoration: none; }
   .wx-bolt { opacity: .9; }
   .wx-stars i { opacity: .9; }
 }
+
+/* ============ Announcements — the beautiful notice card ============ */
+.n-stack { display: grid; gap: 10px; margin-top: 14px; }
+.notice-card {
+  --nt: #4f8cff;
+  position: relative; overflow: hidden;
+  border-radius: 18px; padding: 14px 14px 13px;
+  background: color-mix(in srgb, var(--nt) 13%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--nt) 45%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--nt) 12%, transparent);
+  animation: noticeIn .55s cubic-bezier(.2, .9, .3, 1.15) both;
+}
+.notice-card.info  { --nt: #4f8cff; }
+.notice-card.good  { --nt: #2dd4a7; }
+.notice-card.warn  { --nt: #fbbf24; }
+.notice-card.love  { --nt: #ff6fa5; }
+.notice-card::before {
+  content: ""; position: absolute; left: 0; top: 13px; bottom: 13px; width: 4px;
+  border-radius: 4px; background: var(--nt); opacity: .95;
+}
+.notice-card::after {
+  content: ""; position: absolute; right: -34px; top: -34px; width: 104px; height: 104px;
+  border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--nt) 30%, transparent), transparent 68%);
+  pointer-events: none;
+}
+.notice-card .n-emoji {
+  width: 46px; height: 46px; border-radius: 14px; flex: none;
+  display: grid; place-items: center; font-size: 22px;
+  background: color-mix(in srgb, var(--nt) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--nt) 42%, transparent);
+}
+.notice-card .n-title { font-size: 15.5px; font-weight: 800; line-height: 1.25; }
+.notice-card .n-body { margin-top: 10px; line-height: 1.5; color: var(--text); opacity: .92; padding-left: 1px; }
+.notice-card .n-cta { padding: 10px 16px; font-size: 14px; }
+.notice-card .n-mini { width: 32px; height: 32px; border-radius: 11px; flex: none; }
+.notice-card .n-mini svg { width: 15px; height: 15px; }
+.notice-card .n-close { background: color-mix(in srgb, var(--nt) 14%, transparent); border-color: transparent; }
+.notice-card.leaving { transition: opacity .16s ease, transform .16s ease; }
+@keyframes noticeIn {
+  from { opacity: 0; transform: translateY(-10px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { .notice-card { animation: none; } }
+
+/* admin helpers */
+.code-box {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px; line-height: 1.55; white-space: pre; overflow-x: auto;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; color: var(--text);
+}

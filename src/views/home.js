@@ -12,6 +12,7 @@ import { byId } from '../data/exercises.js';
 import { todaysFlags } from '../data/fests.js';
 import { t } from '../i18n.js';
 import { mountCard as mountWeather, waterTarget } from '../modules/weather.js';
+import { mountNoticeCard } from '../modules/notice.js';
 
 export function render(view) {
   const settings = getSettings();
@@ -46,6 +47,8 @@ export function render(view) {
         <div class="bar mt-8"><i style="width:${lvl.pct}%"></i></div>
       </div>
     </div>
+
+    <div id="notice-slot"></div>
 
     <div class="grid-3 mt-14">
       <div class="stat"><div class="v">${stats.workouts}</div><div class="l">${t('Workouts')}</div></div>
@@ -143,6 +146,9 @@ export function render(view) {
 
   // weather — paints the cached sky instantly, then quietly refreshes from the network
   mountWeather(view.querySelector('#wx-card'));
+
+  // announcements — beautiful card on top of Home + one-time device notification
+  mountNoticeCard(view.querySelector('#notice-slot'));
 
   // quick programs
   const quick = view.querySelector('#quick');

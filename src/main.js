@@ -7,6 +7,7 @@ import { unlockAudio, stopMelody } from './modules/audio.js';
 import { t, setLang, applyChrome } from './i18n.js';
 import { autoRepaint } from './modules/dateline.js';
 import { init as initDateReminder } from './modules/reminder.js';
+import { ADMIN_ROUTE } from './data/notices.js';
 
 registerSW({ immediate: true });
 
@@ -135,6 +136,19 @@ async function route() {
   stopSession();
   view._figs?.forEach(f => f.destroy());
   view._figs = [];
+
+  // 🔒 hidden admin — exists only at the unique link from data/notices.js
+  if (routeId === ADMIN_ROUTE) {
+    currentRoute = 'admin';
+    try {
+      const mod = await import('./views/admin.js');
+      mod.render(view, params);
+    } catch (err) {
+      console.error(err);
+      view.innerHTML = `<div class="empty"><div class="e">😅</div>${esc(t('Something went wrong loading this page.'))}<br><span class="small">${err.message}</span></div>`;
+    }
+    return;
+  }
 
   const id = ROUTES.some(r => r.id === routeId) || SIDE_EXTRA.some(r => r.id === routeId) ? routeId : 'home';
   currentRoute = id;

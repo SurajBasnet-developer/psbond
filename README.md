@@ -35,6 +35,11 @@ Animated male & female coaches · smart interval timer with voice cues & beeps �
 - **Hydration that follows the sky**: when it is 28 °C or hotter, the daily water goal automatically moves from **8 to 10 glasses** on Home and in Progress — with a small "hot day" hint. Turn it off in Settings → *Weather*.
 - **Your place**: pick one of 14 Nepali cities or tap *Use my location* for GPS. The last sky is cached on-device (plus a service-worker cache), so the card still paints offline with your last good weather.
 
+### 📣 Announcements (admin, no server)
+- A **hidden admin panel** opens only at the unique secret link baked into the code (`src/data/notices.js` → `ADMIN_ROUTE`). No menu entry, no database, no server.
+- Workflow: compose → 👁 preview on your own device → 📋 copy the generated snippet → paste it inside `NOTICES` in `src/data/notices.js` → rebuild. The code itself is the database.
+- Users get a **beautiful themed card on top of Home** (info / new-feature / important / maker-love styles, date window, optional CTA button) plus a **one-time device notification** per notice on first open.
+
 ## 🚀 Run it
 
 ```bash
