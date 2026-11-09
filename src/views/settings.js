@@ -4,7 +4,7 @@ import { getSettings, saveSettings, resetAll, getStats, getXP, get } from '../mo
 import { PREMIUM_FEATURES } from '../data/content.js';
 import { t, setLang, applyChrome } from '../i18n.js';
 import { supported as notifSupported, enable as enableNotif, disable as disableNotif, test as testNotif, scheduleNext as scheduleNotif } from '../modules/reminder.js';
-import { CITIES, getLoc, setGps, clearGps, getWeather, codeInfo } from '../modules/weather.js';
+import { PROVINCES, DISTRICT_COUNT, PROVINCE_COUNT, getLoc, setGps, clearGps, getWeather, codeInfo } from '../modules/weather.js';
 
 export let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
@@ -60,12 +60,19 @@ export function render(view) {
 
     <div class="card mt-14" id="wx-card" style="border-color:rgba(120,180,255,.4)">
       <div class="card-title">${esc(t('🌤️ Weather'))}</div>
-      <div class="field" style="margin-top:10px"><label>${esc(t('Your city'))}</label>
+      <div class="field" style="margin-top:10px"><label>${esc(t('Your district'))}</label>
         <select id="wx-city">
           ${get('wxLoc', null) ? `<option value="__gps" selected>📍 ${esc(t('My location (GPS)'))}</option>` : ''}
-          ${CITIES.map(c => `<option value="${c.id}" ${!get('wxLoc', null) && (s.wxCity || 'ktm') === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}
+          ${PROVINCES.map(p => `
+            <optgroup label="${esc(p.name)} · ${p.districts.length}">
+              ${p.districts.map(c => {
+                const picked = !get('wxLoc', null) && (s.wxCity || 'ktm') === c.id;
+                return `<option value="${c.id}" ${picked ? 'selected' : ''}>${esc(c.name)}</option>`;
+              }).join('')}
+            </optgroup>`).join('')}
         </select>
       </div>
+      <div class="small muted mt-8">✅ ${esc(t('All {0} districts of Nepal\'s {1} provinces — GPS works anywhere too.', DISTRICT_COUNT, PROVINCE_COUNT))}</div>
       <div class="row mt-10" style="gap:8px">
         <button class="btn" id="wx-gps">📍 ${esc(t('Use my location'))}</button>
         <button class="btn" id="wx-refresh">🔄 ${esc(t('Refresh now'))}</button>

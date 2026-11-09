@@ -5,22 +5,105 @@ import { get, set, del, getSettings, saveSettings } from './storage.js';
 import { icon, esc, toast } from '../ui/dom.js';
 import { t } from '../i18n.js';
 
-export const CITIES = [
-  { id: 'ktm',  name: 'Kathmandu',        lat: 27.70, lon: 85.32 },
-  { id: 'plt',  name: 'Lalitpur',         lat: 27.66, lon: 85.31 },
-  { id: 'bkt',  name: 'Bhaktapur',        lat: 27.67, lon: 85.43 },
-  { id: 'pkr',  name: 'Pokhara',          lat: 28.23, lon: 83.98 },
-  { id: 'bir',  name: 'Biratnagar',       lat: 26.45, lon: 87.27 },
-  { id: 'itr',  name: 'Itahari',          lat: 26.66, lon: 87.27 },
-  { id: 'dhr',  name: 'Dharan',           lat: 26.81, lon: 87.28 },
-  { id: 'jnk',  name: 'Janakpurdham',     lat: 26.73, lon: 85.92 },
-  { id: 'brg',  name: 'Birgunj',          lat: 27.01, lon: 84.88 },
-  { id: 'heta', name: 'Hetauda',          lat: 27.43, lon: 85.03 },
-  { id: 'btw',  name: 'Butwal',           lat: 27.70, lon: 83.45 },
-  { id: 'bhr',  name: 'Bhairahawa',       lat: 27.51, lon: 83.45 },
-  { id: 'npg',  name: 'Nepalgunj',        lat: 28.05, lon: 81.62 },
-  { id: 'dhn',  name: 'Dhangadhi',        lat: 28.70, lon: 80.59 },
+// Nepal — all 77 districts of the 7 provinces (coords = district HQ / main town),
+// ordered the way Nepalis say them: east → west, Koshi to Sudurpashchim.
+export const PROVINCES = [
+  { name: 'Koshi', districts: [
+    { id: 'bir',  name: 'Morang',        lat: 26.45, lon: 87.27 },
+    { id: 'dhr',  name: 'Sunsari',       lat: 26.81, lon: 87.28 },
+    { id: 'jhpa', name: 'Jhapa',         lat: 26.55, lon: 88.09 },
+    { id: 'ilam', name: 'Ilam',          lat: 26.91, lon: 87.93 },
+    { id: 'pnt',  name: 'Panchthar',     lat: 27.15, lon: 87.89 },
+    { id: 'tbl',  name: 'Taplejung',     lat: 27.35, lon: 87.67 },
+    { id: 'snb',  name: 'Sankhuwasabha', lat: 27.36, lon: 87.23 },
+    { id: 'bho',  name: 'Bhojpur',       lat: 27.17, lon: 87.05 },
+    { id: 'dkta', name: 'Dhankuta',      lat: 26.98, lon: 87.33 },
+    { id: 'thm',  name: 'Terhathum',     lat: 27.10, lon: 87.47 },
+    { id: 'kha',  name: 'Khotang',       lat: 27.20, lon: 86.78 },
+    { id: 'oka',  name: 'Okhaldhunga',   lat: 27.32, lon: 86.50 },
+    { id: 'slk',  name: 'Solukhumbu',    lat: 27.51, lon: 86.59 },
+    { id: 'udp',  name: 'Udayapur',      lat: 26.97, lon: 86.50 },
+  ]},
+  { name: 'Madhesh', districts: [
+    { id: 'spt',  name: 'Saptari',      lat: 26.54, lon: 86.75 },
+    { id: 'srh',  name: 'Siraha',       lat: 26.66, lon: 86.20 },
+    { id: 'jnk',  name: 'Dhanusha',     lat: 26.73, lon: 85.92 },
+    { id: 'mht',  name: 'Mahottari',    lat: 26.65, lon: 85.80 },
+    { id: 'slh',  name: 'Sarlahi',      lat: 26.86, lon: 85.56 },
+    { id: 'rth',  name: 'Rautahat',     lat: 26.77, lon: 85.28 },
+    { id: 'brg',  name: 'Parsa',        lat: 27.01, lon: 84.88 },
+    { id: 'bar',  name: 'Bara',         lat: 27.03, lon: 85.00 },
+  ]},
+  { name: 'Bagmati', districts: [
+    { id: 'ktm',  name: 'Kathmandu',     lat: 27.70, lon: 85.32 },
+    { id: 'plt',  name: 'Lalitpur',      lat: 27.66, lon: 85.31 },
+    { id: 'bkt',  name: 'Bhaktapur',     lat: 27.67, lon: 85.43 },
+    { id: 'kvre', name: 'Kavre',         lat: 27.62, lon: 85.55 },
+    { id: 'snp',  name: 'Sindhupalchok', lat: 27.78, lon: 85.69 },
+    { id: 'nwt',  name: 'Nuwakot',       lat: 27.91, lon: 85.15 },
+    { id: 'rsw',  name: 'Rasuwa',        lat: 28.11, lon: 85.30 },
+    { id: 'dhd',  name: 'Dhading',       lat: 27.86, lon: 84.92 },
+    { id: 'heta', name: 'Makwanpur',     lat: 27.43, lon: 85.03 },
+    { id: 'sln',  name: 'Sindhuli',      lat: 27.27, lon: 85.91 },
+    { id: 'dola', name: 'Dolakha',       lat: 27.67, lon: 86.05 },
+    { id: 'rmc',  name: 'Ramechhap',     lat: 27.39, lon: 86.06 },
+    { id: 'chit', name: 'Chitwan',       lat: 27.68, lon: 84.43 },
+  ]},
+  { name: 'Gandaki', districts: [
+    { id: 'pkr',  name: 'Kaski',     lat: 28.23, lon: 83.98 },
+    { id: 'syn',  name: 'Syangja',   lat: 28.11, lon: 83.87 },
+    { id: 'tnh',  name: 'Tanahu',    lat: 27.98, lon: 84.28 },
+    { id: 'lmj',  name: 'Lamjung',   lat: 28.23, lon: 84.29 },
+    { id: 'grk',  name: 'Gorkha',    lat: 27.99, lon: 84.63 },
+    { id: 'prb',  name: 'Parbat',    lat: 28.22, lon: 83.69 },
+    { id: 'myd',  name: 'Myagdi',    lat: 28.35, lon: 83.69 },
+    { id: 'bgl',  name: 'Baglung',   lat: 28.27, lon: 83.59 },
+    { id: 'mus',  name: 'Mustang',   lat: 28.78, lon: 83.74 },
+    { id: 'mng',  name: 'Manang',    lat: 28.55, lon: 84.05 },
+    { id: 'npw',  name: 'Nawalpur',  lat: 27.64, lon: 84.10 },
+  ]},
+  { name: 'Lumbini', districts: [
+    { id: 'btw',  name: 'Rupandehi',            lat: 27.70, lon: 83.45 },
+    { id: 'kvl',  name: 'Kapilvastu',           lat: 27.55, lon: 83.41 },
+    { id: 'pwi',  name: 'Nawalparasi (West)',   lat: 27.50, lon: 83.64 },
+    { id: 'plp',  name: 'Palpa',                lat: 27.87, lon: 83.67 },
+    { id: 'glm',  name: 'Gulmi',                lat: 28.06, lon: 83.38 },
+    { id: 'ahl',  name: 'Arghakhanchi',         lat: 27.91, lon: 83.13 },
+    { id: 'dng',  name: 'Dang',                 lat: 27.86, lon: 82.42 },
+    { id: 'pyn',  name: 'Pyuthan',              lat: 28.13, lon: 82.84 },
+    { id: 'rlp',  name: 'Rolpa',                lat: 28.30, lon: 82.68 },
+    { id: 'rea',  name: 'Rukum East',           lat: 28.64, lon: 82.42 },
+    { id: 'npg',  name: 'Banke',                lat: 28.05, lon: 81.62 },
+    { id: 'brd',  name: 'Bardiya',              lat: 28.22, lon: 81.66 },
+  ]},
+  { name: 'Karnali', districts: [
+    { id: 'sur',  name: 'Surkhet',   lat: 28.60, lon: 81.63 },
+    { id: 'dlk',  name: 'Dailekh',   lat: 28.84, lon: 81.71 },
+    { id: 'sal',  name: 'Salyan',    lat: 28.38, lon: 82.15 },
+    { id: 'jaj',  name: 'Jajarkot',  lat: 28.70, lon: 82.19 },
+    { id: 'rwe',  name: 'Rukum West', lat: 28.74, lon: 82.48 },
+    { id: 'kal',  name: 'Kalikot',   lat: 29.11, lon: 81.60 },
+    { id: 'jum',  name: 'Jumla',     lat: 29.27, lon: 82.18 },
+    { id: 'mug',  name: 'Mugu',      lat: 29.56, lon: 82.11 },
+    { id: 'hum',  name: 'Humla',     lat: 29.97, lon: 81.83 },
+    { id: 'dol',  name: 'Dolpa',     lat: 28.94, lon: 82.81 },
+  ]},
+  { name: 'Sudurpashchim', districts: [
+    { id: 'dhn',  name: 'Kailali',    lat: 28.70, lon: 80.59 },
+    { id: 'knc',  name: 'Kanchanpur', lat: 28.97, lon: 80.18 },
+    { id: 'dot',  name: 'Doti',       lat: 29.26, lon: 80.31 },
+    { id: 'ddd',  name: 'Dadeldhura', lat: 29.30, lon: 80.58 },
+    { id: 'ach',  name: 'Achham',     lat: 29.06, lon: 81.24 },
+    { id: 'dra',  name: 'Darchula',   lat: 29.85, lon: 80.55 },
+    { id: 'bai',  name: 'Baitadi',    lat: 29.53, lon: 80.47 },
+    { id: 'baj',  name: 'Bajhang',    lat: 29.54, lon: 81.21 },
+    { id: 'bju',  name: 'Bajura',     lat: 29.52, lon: 81.43 },
+  ]},
 ];
+// flat list — every district in one place, for lookups by id
+export const CITIES = PROVINCES.flatMap(p => p.districts);
+export const DISTRICT_COUNT = CITIES.length;
+export const PROVINCE_COUNT = PROVINCES.length;
 
 // WMO weather codes → [label, emoji]
 const CODES = {
@@ -91,7 +174,7 @@ export function getLoc() {
   const saved = get('wxLoc', null);
   if (saved && Number.isFinite(saved.lat)) return saved;
   const s = getSettings();
-  const city = CITIES.find(c => c.id === (s.wxCity || 'ktm')) || CITIES[0];
+  const city = CITIES.find(c => c.id === (s.wxCity || 'ktm')) || CITIES.find(c => c.id === 'ktm');
   return { lat: city.lat, lon: city.lon, label: city.name };
 }
 
