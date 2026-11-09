@@ -11,6 +11,7 @@ import { playWorkout } from '../modules/player.js';
 import { byId } from '../data/exercises.js';
 import { todaysFlags } from '../data/fests.js';
 import { t } from '../i18n.js';
+import { mountCard as mountWeather, waterTarget } from '../modules/weather.js';
 
 export function render(view) {
   const settings = getSettings();
@@ -24,6 +25,7 @@ export function render(view) {
   const challenge = CHALLENGES[Math.abs([...dayKey()].reduce((a, c) => a + c.charCodeAt(0), 0)) % CHALLENGES.length];
   const chDone = getChallengeState()[dayKey()]?.done;
   const water = getWater();
+  const maxWater = waterTarget(); // weather-aware goal: 8 → 10 glasses on hot days
   const stepGoal = getStepGoal();
   const fmtInt = n => (n || 0).toLocaleString('en');
 
@@ -50,6 +52,8 @@ export function render(view) {
       <div class="stat"><div class="v">${log.min ? Math.round(log.min) : 0}</div><div class="l">${t('Min today')}</div></div>
       <div class="stat"><div class="v">${log.cal || 0}</div><div class="l">${t('Kcal today')}</div></div>
     </div>
+
+    <div class="card mt-14" id="wx-card"></div>
 
     ${todaysFlags().length ? `
     <div class="card tap mt-14" data-go="fasting" style="border-color:rgba(255,154,107,.4)">
@@ -83,17 +87,17 @@ export function render(view) {
     <div class="section-title">${t('Quick start')} <span class="see-all" data-go="workouts">${t('See all →')}</span></div>
     <div class="hscroll" id="quick"></div>
 
-    <div class="section-title">${t('Water tracker')}</div>
+    <div class="section-title">${t('Water tracker')}${maxWater > 8 ? ` <span class="small muted">· ${t('+2 today — hot day')} 🌡️</span>` : ''}</div>
     <div class="card">
       <div class="row between">
         <div>
-          <div style="font-weight:800" id="water-count">${t('{0}/8 glasses', water)}</div>
-          <div class="small muted" id="water-mood">${water >= 8 ? t('Hydration hero! 💧') : t('Small sips, big energy.')}</div>
+          <div style="font-weight:800" id="water-count">${t('{0}/{1} glasses', water, maxWater)}</div>
+          <div class="small muted" id="water-mood">${water >= maxWater ? t('Hydration hero! 💧') : t('Small sips, big energy.')}</div>
         </div>
         <button class="btn" id="water-add">${icon('plus')} ${t('Add')}</button>
       </div>
       <div class="glasses">
-        ${Array.from({ length: 8 }, (_, i) => `<div class="glass ${i < water ? 'full' : ''}" data-i="${i}"></div>`).join('')}
+        ${Array.from({ length: maxWater }, (_, i) => `<div class="glass ${i < water ? 'full' : ''}" data-i="${i}"></div>`).join('')}
       </div>
     </div>
 
@@ -136,6 +140,9 @@ export function render(view) {
   // hero figure
   const fig = createFigure(view.querySelector('#home-fig'), { gender: settings.gender, pose: 'dance', speed: 0.9 });
   view._figs = [fig];
+
+  // weather — paints the cached sky instantly, then quietly refreshes from the network
+  mountWeather(view.querySelector('#wx-card'));
 
   // quick programs
   const quick = view.querySelector('#quick');
@@ -180,10 +187,10 @@ export function render(view) {
   const waterCount = view.querySelector('#water-count');
   const waterMood = view.querySelector('#water-mood');
   const glasses = [...view.querySelectorAll('.glass')];
-  const WATER_MAX = 8;
+  const WATER_MAX = maxWater; // same weather-aware goal the markup was painted with
 
   const paintWater = w => {
-    waterCount.textContent = t('{0}/8 glasses', w);
+    waterCount.textContent = t('{0}/{1} glasses', w, WATER_MAX);
     waterMood.textContent = w >= WATER_MAX ? t('Hydration hero! 💧') : t('Small sips, big energy.');
     glasses.forEach((g, i) => g.classList.toggle('full', i < w));
   };

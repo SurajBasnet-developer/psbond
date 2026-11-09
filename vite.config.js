@@ -37,6 +37,13 @@ export default defineConfig({
         skipWaiting: true,
         runtimeCaching: [
           {
+            // Open-Meteo sky — NetworkFirst with a 1-day fallback so Home can
+            // always paint the last known weather fully offline (no key, free)
+            urlPattern: /api\.open-meteo\.com/,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'bb-wx-api', expiration: { maxEntries: 8, maxAgeSeconds: 86400 }, networkTimeoutSeconds: 10 },
+          },
+          {
             // news feed/proxy calls — keep the last good payload around
             urlPattern: /jina\.ai|allorigins\.win|codetabs\.com|rss2json\.com|corsproxy\.io/,
             handler: 'NetworkFirst',

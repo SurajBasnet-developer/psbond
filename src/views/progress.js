@@ -2,6 +2,7 @@
 import { el, icon, toast } from '../ui/dom.js';
 import { barChart, streakCalendar } from '../ui/charts.js';
 import { getLog, getStats, getStreak, getXP, levelInfo, getWater, setWater, exportData, getSettings, saveSettings, dayKey, getSteps, stepStats, getStepGoal, stepsToKm } from '../modules/storage.js';
+import { waterTarget } from '../modules/weather.js';
 import { ACHIEVEMENTS, LEVELS } from '../data/content.js';
 
 export function render(view) {
@@ -10,6 +11,7 @@ export function render(view) {
   const streak = getStreak();
   const lvl = levelInfo();
   const water = getWater();
+  const maxWater = waterTarget();
   const settings = getSettings();
   const fmtInt = n => (n || 0).toLocaleString('en');
 
@@ -84,8 +86,8 @@ export function render(view) {
 
     <div class="section-title">Hydration</div>
     <div class="card">
-      <div class="row between"><div style="font-weight:800">${water}/8 glasses today</div><span class="small muted">${(water * 0.25).toFixed(2)} L</span></div>
-      <div class="glasses">${Array.from({ length: 8 }, (_, i) => `<div class="glass ${i < water ? 'full' : ''}" data-i="${i}"></div>`).join('')}</div>
+      <div class="row between"><div style="font-weight:800">${maxWater > 8 ? `${water}/${maxWater} glasses today · +2 hot day 🌡️` : `${water}/8 glasses today`}</div><span class="small muted">${(water * 0.25).toFixed(2)} L</span></div>
+      <div class="glasses">${Array.from({ length: maxWater }, (_, i) => `<div class="glass ${i < water ? 'full' : ''}" data-i="${i}"></div>`).join('')}</div>
     </div>
 
     <div class="section-title">BMI calculator</div>

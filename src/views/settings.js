@@ -1,9 +1,10 @@
 // Settings — profile, theme, premium feature list, install, about.
 import { el, icon, toast, esc } from '../ui/dom.js';
-import { getSettings, saveSettings, resetAll, getStats, getXP } from '../modules/storage.js';
+import { getSettings, saveSettings, resetAll, getStats, getXP, get } from '../modules/storage.js';
 import { PREMIUM_FEATURES } from '../data/content.js';
 import { t, setLang, applyChrome } from '../i18n.js';
 import { supported as notifSupported, enable as enableNotif, disable as disableNotif, test as testNotif, scheduleNext as scheduleNotif } from '../modules/reminder.js';
+import { CITIES, getLoc, setGps, clearGps, getWeather, codeInfo } from '../modules/weather.js';
 
 export let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
@@ -55,6 +56,23 @@ export function render(view) {
         <button class="btn" id="notif-test">${icon('sparkle')} ${esc(t('Test now'))}</button>
       </div>
       <div class="small muted mt-8">${icon('calendar')} ${esc(t('The date is also pinned at the top of every screen. Notifications need an installed app on iOS 16.4+ (Add to Home Screen); Android works out of the box. Fired daily while the app runs in the background — no server, always free.'))}</div>
+    </div>
+
+    <div class="card mt-14" id="wx-card" style="border-color:rgba(120,180,255,.4)">
+      <div class="card-title">${esc(t('🌤️ Weather'))}</div>
+      <div class="field" style="margin-top:10px"><label>${esc(t('Your city'))}</label>
+        <select id="wx-city">
+          ${get('wxLoc', null) ? `<option value="__gps" selected>📍 ${esc(t('My location (GPS)'))}</option>` : ''}
+          ${CITIES.map(c => `<option value="${c.id}" ${!get('wxLoc', null) && (s.wxCity || 'ktm') === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="row mt-10" style="gap:8px">
+        <button class="btn" id="wx-gps">📍 ${esc(t('Use my location'))}</button>
+        <button class="btn" id="wx-refresh">🔄 ${esc(t('Refresh now'))}</button>
+      </div>
+      <div class="setting-row mt-10"><div><div class="t">${esc(t('Extra water on hot days'))}</div><div class="d">${esc(t('Goal moves from 8 to 10 glasses when it is 28°C or hotter'))}</div></div><button class="switch ${s.wxAutoWater !== false ? 'on' : ''}" id="wx-water-switch"></button></div>
+      <div class="small muted mt-10" id="wx-preview">${esc(t('Loading your sky…'))}</div>
+      <div class="small muted mt-8">${icon('sparkle')} ${esc(t('Free Open-Meteo service, no key needed. Data is cached on your device — offline it shows your last sky.'))}</div>
     </div>
 
     <div class="card mt-14" id="install-card" style="border-color:rgba(255,154,107,.4)">
@@ -137,6 +155,50 @@ export function render(view) {
     if (res === 'granted') toast(t("Sent! Look at the top of your screen 📅"), 3600);
     else if (note) toast(note, 3600);
     else toast(t('Permission not granted ❌'));
+  });
+
+  // weather
+  const wxPreview = view.querySelector('#wx-preview');
+  const paintWxPreview = d => {
+    const [label, emoji] = codeInfo(d.cur.code);
+    wxPreview.innerHTML = `${emoji} ${esc(getLoc().label)}: <b>${d.cur.t}°C</b>, ${esc(label)} · 🌅 ${esc(d.sun.rise)} · 🌇 ${esc(d.sun.set)}`;
+  };
+  const cachedWx = get('wxCache', null);
+  if (cachedWx?.data) paintWxPreview(cachedWx.data);
+  getWeather().then(paintWxPreview)
+    .catch(() => { if (!cachedWx?.data) wxPreview.textContent = t('No sky yet — go online once and it will remember.'); });
+
+  view.querySelector('#wx-city').addEventListener('change', e => {
+    if (e.target.value === '__gps') return;
+    clearGps();
+    saveSettings({ wxCity: e.target.value });
+    render(view); // GPS option disappears; preview refetches for the new city
+  });
+
+  view.querySelector('#wx-gps').addEventListener('click', () => {
+    if (!navigator.geolocation) return toast(t('GPS not available on this device'));
+    toast(t('Finding you…'));
+    navigator.geolocation.getCurrentPosition(
+      p => { setGps(p.coords.latitude, p.coords.longitude); toast(t('Location set 📍')); render(view); },
+      () => toast(t('Could not get GPS — try again outdoors'), 3000),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 600000 }
+    );
+  });
+
+  view.querySelector('#wx-refresh').addEventListener('click', async () => {
+    try {
+      const d = await getWeather({ force: true });
+      paintWxPreview(d);
+      toast(t('Sky updated ⛅'));
+    } catch { toast(t('No internet right now — showing the last sky'), 3000); }
+  });
+
+  const wxWaterSw = view.querySelector('#wx-water-switch');
+  wxWaterSw.addEventListener('click', () => {
+    const nowOn = s.wxAutoWater === false;
+    saveSettings({ wxAutoWater: nowOn });
+    wxWaterSw.classList.toggle('on', nowOn);
+    toast(nowOn ? t('Extra water on hot days — on 💧') : t('Extra water on hot days — off'));
   });
 
   // install
