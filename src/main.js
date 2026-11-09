@@ -5,6 +5,8 @@ import { el, icon, esc, toast } from './ui/dom.js';
 import { getSettings, saveSettings } from './modules/storage.js';
 import { unlockAudio, stopMelody } from './modules/audio.js';
 import { t, setLang, applyChrome } from './i18n.js';
+import { autoRepaint } from './modules/dateline.js';
+import { init as initDateReminder } from './modules/reminder.js';
 
 registerSW({ immediate: true });
 
@@ -65,6 +67,11 @@ langBtn.addEventListener('click', e => {
   route();
 });
 
+// ---------- top date strip (always visible — Android, iOS & desktop) ----------
+const dateStrip = el(`<div id="date-strip" class="date-strip" role="status" aria-label="Today's date"></div>`);
+document.body.appendChild(dateStrip);
+autoRepaint(dateStrip);
+
 const ROUTES = [
   { id: 'home', label: 'Home', icon: 'home' },
   { id: 'workouts', label: 'Train', icon: 'train' },
@@ -79,6 +86,7 @@ const SIDE_EXTRA = [
   { id: 'care', label: 'Care', icon: 'heart' },
   { id: 'library', label: 'Library', icon: 'book' },
   { id: 'books', label: 'Book Summaries', icon: 'book' },
+  { id: 'scriptures', label: 'Hindu Books', icon: 'lotus' },
   { id: 'melodies', label: 'Melodies', icon: 'music' },
   { id: 'dates', label: 'Date Converter', icon: 'calendar' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar' },
@@ -102,9 +110,9 @@ function renderMore(v) {
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', melodies: '🎵', dates: '📅', calendar: '🗓️', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', scriptures: '🕉️', melodies: '🎵', dates: '📅', calendar: '🗓️', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
           <div style="font-weight:800" class="mt-8">${esc(t(r.label))}</div>
-          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', calendar: 'Nepali patro — festivals & holidays', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
+          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', scriptures: 'Free Hindu books — Gita, Chalisa & more', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', calendar: 'Nepali patro — festivals & holidays', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>
@@ -152,6 +160,9 @@ Object.defineProperty(view, '_rerender', { get: () => route });
 
 window.addEventListener('hashchange', route);
 route();
+
+// daily date notification — fires at the chosen time with today's date in it
+initDateReminder();
 
 // unlock audio on first interaction (mobile browsers)
 ['pointerdown', 'keydown'].forEach(ev =>

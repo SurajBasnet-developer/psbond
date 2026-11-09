@@ -76,6 +76,7 @@ export const DEFAULT_SETTINGS = {
   name: '', theme: 'dark', gender: 'male', voice: true, sfx: true,
   keepAwake: true, waterRemind: false, haptics: true, lang: 'en',
   stepGoal: 8000, stride: 0.7,   // pedometer: daily steps & stride length (m)
+  dateNotif: false, dateNotifTime: '07:30',   // daily date notification (Android & iOS)
 };
 export function getSettings() { return { ...DEFAULT_SETTINGS, ...get('settings', {}) }; }
 export function saveSettings(patch) { set('settings', { ...getSettings(), ...patch }); }

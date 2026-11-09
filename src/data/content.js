@@ -263,4 +263,6 @@ export const PREMIUM_FEATURES = [
   ['📱', 'Install anywhere', 'A true app on Android, iOS, Windows, macOS and Linux.'],
   ['🌗', 'Dark & light themes', 'Premium looks in both modes, automatically.'],
   ['📦', 'Data export', 'Your progress belongs to you — export anytime.'],
+  ['🕉️', 'Hindu books library', 'Read the Bhagavad Gita, Hanuman Chalisa, stotras — free, offline, forever.'],
+  ['📅', 'Date in notifications', "Today's Nepali & English date pinned at the top of every screen, plus a daily date notification on Android & iOS."],
 ];

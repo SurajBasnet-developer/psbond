@@ -11,6 +11,7 @@ A premium, offline-first **Progressive Web App** for daily fitness, meditation, 
 | 💪 **Build & Power (Men)** | Biceps, triceps, shoulders, chest, back, legs, core & full-body programs with animated male coach |
 | 🌸 **Slim & Glow (Women)** | Slim-down, core & waist, glutes, arms, flexibility — beginner-friendly with female coach |
 | 🧘 **Mind Studio** | Guided meditations, breathwork (4-7-8, box), sleep sounds, SOS calm for anxiety & heavy days |
+| 🕉️ **Hindu Books** | A free scripture library — **Bhagavad Gita (18 chapters), Hanuman Chalisa (full), Rudrashtakam, Devi hymns, Vedas, Upanishad wisdom, daily shlokas & purana stories** — bundled offline with a shloka-of-the-day, reader with font control, save-shelf & reading progress |
 | 💃 **Dance** | Dance cardio programs + a live **beat engine** (house / lo-fi / afro) with tempo control |
 | 💫 **Motivation** | Daily quotes (free APIs + offline fallback), affirmation board, shareable vibes |
 | 📰 **News** | Read the real portals inside the app — **Onlinekhabar, eKantipur, Gorkhapatra, Shilapatra** — plus a headlines wire with a full **in-app reader** (font-size control, save-offline, share) |
@@ -20,8 +21,12 @@ A premium, offline-first **Progressive Web App** for daily fitness, meditation, 
 | 🏠 **GharGym** | 25 strength moves with household kit — water bottles, gagri, rice sacks (bhaari), bricks, towels, stairs |
 | 🙏 **Fast & Fest** | Shrawan Sombar & Sankranti auto-tracked from the BS calendar, weekly fast reminders, fasting-safe sessions + Teej/Dashain/Tihar/Chhath day guides |
 
-### Premium features included (28)
-Animated male & female coaches · smart interval timer with voice cues & beeps · full offline mode · generated soundscapes (rain, ocean, om, bowl, night — zero downloads) · breathing trainer · SOS grounding · dance beat engine · mind-care routines · analytics & streaks · achievements · XP levels · daily challenges · hydration tracker · BMI calculator · custom workouts · unlimited library · shuffle generator · relationship wisdom · gratitude journal · sleep sounds · screen wake-lock · haptics · installable app with splash screen · dark & light themes · data export · GharGym (household equipment workouts) · fast & festival mode · **live news reader** · **offline pedometer**.
+### Premium features included (30)
+Animated male & female coaches · smart interval timer with voice cues & beeps · full offline mode · generated soundscapes (rain, ocean, om, bowl, night — zero downloads) · breathing trainer · SOS grounding · dance beat engine · mind-care routines · analytics & streaks · achievements · XP levels · daily challenges · hydration tracker · BMI calculator · custom workouts · unlimited library · shuffle generator · relationship wisdom · gratitude journal · sleep sounds · screen wake-lock · haptics · installable app with splash screen · dark & light themes · data export · GharGym (household equipment workouts) · fast & festival mode · **live news reader** · **offline pedometer** · **Hindu books library** · **date in notifications**.
+
+### 📅 Date, always in sight (Android · iOS)
+- A slim **date strip is pinned at the top of every screen** — today's Bikram Sambat (Nepali) date, the English date, and today's festival (if any), refreshed right after midnight and on each app reopen.
+- **Daily date notification** (Settings → *Date notice — Android & iOS*): pick a time and BiggerBody puts today's full date in your device's notification shade — Android out of the box; iOS 16.4+ once the app is added to the Home Screen. Fired on-device from the same offline calendar — no server, no cost.
 
 ## 🚀 Run it
 

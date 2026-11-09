@@ -3,6 +3,7 @@ import { el, icon, toast, esc } from '../ui/dom.js';
 import { getSettings, saveSettings, resetAll, getStats, getXP } from '../modules/storage.js';
 import { PREMIUM_FEATURES } from '../data/content.js';
 import { t, setLang, applyChrome } from '../i18n.js';
+import { supported as notifSupported, enable as enableNotif, disable as disableNotif, test as testNotif, scheduleNext as scheduleNotif } from '../modules/reminder.js';
 
 export let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
@@ -44,6 +45,16 @@ export function render(view) {
       <div class="setting-row"><div><div class="t">${esc(t('Sound effects'))}</div><div class="d">${esc(t('Beeps for work & rest phases'))}</div></div><button class="switch ${s.sfx ? 'on' : ''}" data-set="sfx"></button></div>
       <div class="setting-row"><div><div class="t">${esc(t('Keep screen awake'))}</div><div class="d">${esc(t('During workouts'))}</div></div><button class="switch ${s.keepAwake ? 'on' : ''}" data-set="keepAwake"></button></div>
       <div class="setting-row"><div><div class="t">${esc(t('Haptics'))}</div><div class="d">${esc(t('Gentle vibration on changes'))}</div></div><button class="switch ${s.haptics ? 'on' : ''}" data-set="haptics"></button></div>
+    </div>
+
+    <div class="card mt-14" id="date-notif-card" style="border-color:rgba(250,200,80,.4)">
+      <div class="card-title">${esc(t('Date notice — Android & iOS'))}</div>
+      <div class="setting-row"><div><div class="t">${esc(t('Daily date notification'))}</div><div class="d">${esc(t("Today's Nepali + English date, in your device's notification shade"))}</div></div><button class="switch ${s.dateNotif ? 'on' : ''}" id="notif-switch"></button></div>
+      <div class="field mt-14" style="margin-bottom:0"><label>${esc(t('Reminder time'))}</label><input id="notif-time" type="time" value="${s.dateNotifTime || '07:30'}"></div>
+      <div class="row mt-14" style="gap:8px">
+        <button class="btn" id="notif-test">${icon('sparkle')} ${esc(t('Test now'))}</button>
+      </div>
+      <div class="small muted mt-8">${icon('calendar')} ${esc(t('The date is also pinned at the top of every screen. Notifications need an installed app on iOS 16.4+ (Add to Home Screen); Android works out of the box. Fired daily while the app runs in the background — no server, always free.'))}</div>
     </div>
 
     <div class="card mt-14" id="install-card" style="border-color:rgba(255,154,107,.4)">
@@ -100,6 +111,33 @@ export function render(view) {
     }
     render(view);
   }));
+
+  // date notification (Android & iOS)
+  const notifSwitch = view.querySelector('#notif-switch');
+  const notifTime = view.querySelector('#notif-time');
+  const notifNote = () => {
+    if (!notifSupported()) return t('Notifications are not available in this browser');
+    if (Notification.permission === 'denied') return t('Blocked: allow notifications for this site in your browser settings');
+    return '';
+  };
+  notifSwitch.addEventListener('click', async () => {
+    if (s.dateNotif) {
+      disableNotif();
+      toast(t('Date notification off'));
+    } else {
+      const res = await enableNotif();
+      toast(res === 'granted' ? t("Date notification on — check today's notification 📅") : t('Permission not granted ❌'));
+    }
+    render(view);
+  });
+  notifTime.addEventListener('change', e => { saveSettings({ dateNotifTime: e.target.value || '07:30' }); scheduleNotif(); });
+  view.querySelector('#notif-test').addEventListener('click', async () => {
+    const res = await testNotif();
+    const note = notifNote();
+    if (res === 'granted') toast(t("Sent! Look at the top of your screen 📅"), 3600);
+    else if (note) toast(note, 3600);
+    else toast(t('Permission not granted ❌'));
+  });
 
   // install
   const installBtn = view.querySelector('#install-btn');

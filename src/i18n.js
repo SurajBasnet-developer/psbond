@@ -36,7 +36,7 @@ export const ROUTE_LABEL = {
   home: 'Home', train: 'Train', mind: 'Mind', progress: 'Progress', more: 'More',
   dance: 'Dance', motivation: 'Motivation', news: 'News', care: 'Care', library: 'Library',
   books: 'Book Summaries', melodies: 'Melodies', dates: 'Date Converter',
-  calendar: 'Calendar',
+  calendar: 'Calendar', scriptures: 'Hindu Books',
   ghargym: 'GharGym', fasting: 'Fast & Fest', settings: 'Settings',
 };
 
