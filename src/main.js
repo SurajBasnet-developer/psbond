@@ -87,6 +87,7 @@ const SIDE_EXTRA = [
   { id: 'care', label: 'Care', icon: 'heart' },
   { id: 'library', label: 'Library', icon: 'book' },
   { id: 'books', label: 'Book Summaries', icon: 'book' },
+  { id: 'sofficer', label: 'Section Officer', icon: 'medal' },
   { id: 'scriptures', label: 'Hindu Books', icon: 'lotus' },
   { id: 'melodies', label: 'Melodies', icon: 'music' },
   { id: 'dates', label: 'Date Converter', icon: 'calendar' },
@@ -111,9 +112,9 @@ function renderMore(v) {
     <div class="grid-2">
       ${SIDE_EXTRA.map(r => `
         <div class="card tap" data-go="${r.id}">
-          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', scriptures: '🕉️', melodies: '🎵', dates: '📅', calendar: '🗓️', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
+          <div style="font-size:26px">${{ dance: '💃', motivation: '💫', news: '📰', care: '💞', library: '📚', books: '📖', sofficer: '🎖️', scriptures: '🕉️', melodies: '🎵', dates: '📅', calendar: '🗓️', ghargym: '🏠', fasting: '🙏', settings: '⚙️' }[r.id]}</div>
           <div style="font-weight:800" class="mt-8">${esc(t(r.label))}</div>
-          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', scriptures: 'Free Hindu books — Gita, Chalisa & more', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', calendar: 'Nepali patro — festivals & holidays', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
+          <div class="small muted">${esc(t({ dance: 'Beat studio & dance cardio', motivation: 'Quotes & affirmations', news: 'Live headlines from Nepal & beyond', care: 'Relationships & gratitude', library: 'All exercises A–Z', books: 'Best self-help books, distilled', sofficer: 'Lok Sewa Aayog prep — syllabus, discipline & hours', scriptures: 'Free Hindu books — Gita, Chalisa & more', melodies: 'Generated meditation music', dates: 'Nepali ↔ English calendar', calendar: 'Nepali patro — festivals & holidays', ghargym: 'Strength from bottles, sacks, bricks', fasting: 'Train smart on fasting & festival days', settings: 'Profile, theme, install' }[r.id]))}</div>
         </div>`).join('')}
     </div>
     <div class="center small muted mt-20">Made with ❤️ by <b>Suraj Basnet</b></div>

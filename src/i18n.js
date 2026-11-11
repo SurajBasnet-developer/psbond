@@ -36,7 +36,7 @@ export const ROUTE_LABEL = {
   home: 'Home', train: 'Train', mind: 'Mind', progress: 'Progress', more: 'More',
   dance: 'Dance', motivation: 'Motivation', news: 'News', care: 'Care', library: 'Library',
   books: 'Book Summaries', melodies: 'Melodies', dates: 'Date Converter',
-  calendar: 'Calendar', scriptures: 'Hindu Books',
+  calendar: 'Calendar', scriptures: 'Hindu Books', sofficer: 'Section Officer',
   ghargym: 'GharGym', fasting: 'Fast & Fest', settings: 'Settings',
 };
 
@@ -57,6 +57,8 @@ const NE = {
   'GharGym': 'घर जिम',
   'Fast & Fest': 'व्रत र पर्व',
   'Settings': 'सेटिङ',
+  'Section Officer': 'शाखा अधिकृत',
+  'Lok Sewa Aayog prep — syllabus, discipline & hours': 'लोक सेवा तयारी — पाठ्यक्रम, अनुशासन र समय',
   'Beat studio & dance cardio': 'बीट स्टुडियो र नृत्य कार्डियो',
   'Quotes & affirmations': 'उद्धरण र आत्मप्रेरक वाक्य',
   'Relationships & gratitude': 'सम्बन्ध र कृतज्ञता',

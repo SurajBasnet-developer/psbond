@@ -45,6 +45,7 @@ export const ICONS = {
   bookmark: '<path d="M6 3.5h12a.5.5 0 0 1 .5.5v17L12 17l-6.5 4V4a.5.5 0 0 1 .5-.5z"/>',
   news: '<rect x="3.2" y="4.5" width="14.6" height="15.8" rx="2.4"/><path d="M6.8 8.7h7.4M6.8 11.9h7.4M6.8 15h4.6"/><path d="M17.8 9.2h2.2a1 1 0 0 1 1 1v8.4a2.7 2.7 0 0 1-2.7 2.7H15"/>',
   open: '<path d="M14 4h6v6"/><path d="M20 4l-8.5 8.5"/><path d="M18 13.5v5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H11"/>',
+  medal: '<circle cx="12" cy="9" r="5.2"/><path d="M8.4 13.2 6 21l6-2.8L18 21l-2.4-7.8"/><path d="M12 6.4l.9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3z" fill="currentColor" stroke="none"/>',
 };
 
 export function icon(name, cls = '') {

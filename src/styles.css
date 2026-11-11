@@ -1141,3 +1141,193 @@ a { color: inherit; text-decoration: none; }
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
   padding: 12px 14px; color: var(--text);
 }
+
+/* ============ Section Officer (Lok Sewa prep) ============ */
+.so-hero {
+  position: relative; overflow: hidden; border-radius: 26px; padding: 20px;
+  background: linear-gradient(140deg, rgba(79, 140, 255, .18), rgba(157, 123, 255, .14) 50%, rgba(255, 94, 125, .16));
+  border: 1px solid var(--border);
+}
+.so-halo {
+  position: absolute; width: 220px; height: 220px; border-radius: 50%;
+  right: -60px; top: -70px; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 154, 107, .35), transparent 70%);
+  filter: blur(10px); animation: so-breathe 5s ease-in-out infinite;
+}
+.so-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: 1.1px; color: var(--mind-2); }
+.so-title { font-size: 23px; font-weight: 800; line-height: 1.15; }
+.so-ne { color: var(--muted); font-size: 13px; margin-top: 3px; }
+.so-flag {
+  display: inline-block; font-size: 38px; flex: none;
+  filter: drop-shadow(0 6px 16px rgba(220, 44, 56, .4));
+  animation: so-bob 3.2s ease-in-out infinite;
+}
+@keyframes so-bob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-7px) rotate(3deg); }
+}
+@keyframes so-breathe { 0%, 100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.12); opacity: 1; } }
+.so-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.so-pill {
+  padding: 5px 11px; border-radius: 99px; font-size: 11px; font-weight: 800;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--muted);
+}
+.so-hero-row { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+.so-mini {
+  padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 700;
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+
+/* conic progress ring (syllabus + today's hours) */
+.so-ring {
+  width: 84px; height: 84px; border-radius: 50%; flex: none; position: relative;
+  background: conic-gradient(from -90deg, #4f8cff 0%, #9d7bff var(--p, 0%), var(--surface-2) var(--p, 0%) 100%);
+  transition: background .5s ease;
+}
+.so-ring::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--bg); }
+.so-ring .in { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; line-height: 1.05; }
+.so-ring .in b { font-size: 17px; font-weight: 800; }
+.so-ring .in small { display: block; font-size: 8.5px; letter-spacing: .5px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+
+/* journey */
+.so-days {
+  font-size: 42px; font-weight: 900; line-height: 1;
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.so-flame { display: inline-block; font-size: 20px; animation: so-flicker 1.4s ease-in-out infinite; }
+@keyframes so-flicker {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.16) rotate(2deg); }
+}
+.so-count.urgent { color: #ff8fa3; animation: glowPulse 1.6s ease infinite; }
+.so-logbtn {
+  padding: 9px 13px; border-radius: 12px; font-weight: 800; font-size: 13px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  transition: transform .15s ease;
+}
+.so-logbtn:active { transform: scale(.92); }
+.so-date {
+  padding: 12px 14px; border-radius: 13px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); outline: none; color-scheme: dark;
+}
+[data-theme="light"] .so-date { color-scheme: light; }
+.so-date:focus { border-color: var(--accent-2); }
+
+/* curriculum paper cards */
+.so-paper { position: relative; overflow: hidden; }
+.so-paper .so-tag {
+  position: absolute; top: 14px; right: 14px; font-size: 9.5px; font-weight: 800;
+  letter-spacing: .6px; padding: 4px 9px; border-radius: 99px; text-transform: uppercase;
+  background: rgba(79, 140, 255, .16); color: #7db4ff;
+}
+[data-theme="light"] .so-paper .so-tag { background: rgba(79, 140, 255, .12); color: #2f6fe0; }
+
+/* topic rows (checklist style, also used in discipline) */
+.so-topic {
+  display: flex; align-items: center; gap: 11px; padding: 11px 12px;
+  border-radius: 13px; background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; transition: transform .12s ease, border-color .2s, background .2s;
+}
+.so-topic + .so-topic { margin-top: 8px; }
+.so-topic:active { transform: scale(.98); }
+.so-topic.on { border-color: rgba(74, 222, 128, .45); background: rgba(74, 222, 128, .07); }
+.so-topic .box {
+  width: 22px; height: 22px; border-radius: 8px; border: 2px solid var(--border);
+  display: grid; place-items: center; font-size: 12px; font-weight: 900;
+  color: transparent; flex: none; transition: all .2s;
+}
+.so-topic.on .box {
+  background: var(--ok); border-color: transparent; color: #06220f;
+  animation: so-pop .3s cubic-bezier(.2, .9, .3, 1.5);
+}
+.so-topic .txt { font-size: 13.5px; line-height: 1.4; min-width: 0; }
+@keyframes so-pop {
+  0% { transform: scale(.4); }
+  60% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.pop { animation: so-pop .35s cubic-bezier(.2, .9, .3, 1.4); }
+
+/* time-management plan rows */
+.so-plan-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border-radius: 13px; background: var(--surface); border: 1px solid var(--border);
+}
+.so-plan-row + .so-plan-row { margin-top: 7px; }
+.so-plan-row .tm {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11.5px; font-weight: 700; color: var(--accent-1); white-space: nowrap; flex: none;
+}
+.so-plan-row .lb { flex: 1; font-size: 13px; line-height: 1.35; min-width: 0; }
+.so-plan-row .du {
+  font-size: 11px; font-weight: 800; color: var(--muted);
+  background: var(--surface-2); padding: 4px 9px; border-radius: 99px; flex: none;
+}
+
+/* max→min hour tiers */
+.so-tier {
+  display: flex; align-items: center; gap: 10px; padding: 11px 12px;
+  border-radius: 13px; border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; transition: transform .13s ease, border-color .2s, background .2s;
+}
+.so-tier:active { transform: scale(.98); }
+.so-tier.on { border-color: rgba(255, 154, 107, .5); background: rgba(255, 154, 107, .08); }
+.so-tier .e { font-size: 18px; flex: none; }
+.so-tier .t { flex: 1; min-width: 0; }
+.so-tier .n { font-weight: 800; font-size: 14px; }
+.so-tier .d { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.so-tier .big { font-size: 14.5px; font-weight: 800; white-space: nowrap; text-align: right; line-height: 1.3; }
+
+/* motivation */
+.so-quote { cursor: pointer; }
+.so-afchip {
+  padding: 11px 12px; border-radius: 13px; background: var(--surface);
+  border: 1px solid var(--border); font-size: 12.5px; font-weight: 600;
+  line-height: 1.4; cursor: pointer; transition: transform .14s ease;
+}
+.so-afchip:active { transform: scale(.96); }
+
+/* answer-writing button */
+.so-answer-btn {
+  width: 64px; height: 64px; border-radius: 50%; flex: none;
+  display: grid; place-items: center; font-size: 24px;
+  background: var(--grad); color: #1a0b10;
+  box-shadow: 0 10px 26px rgba(255, 94, 125, .4);
+  transition: transform .15s ease;
+}
+.so-answer-btn:active { transform: scale(.9); }
+
+/* strategy vault rows */
+.so-tip-row {
+  display: flex; align-items: center; gap: 12px; padding: 13px;
+  border-radius: 16px; background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; transition: transform .14s ease;
+}
+.so-tip-row:active { transform: scale(.98); }
+.so-tip-row .e {
+  width: 40px; height: 40px; border-radius: 12px; background: var(--surface-2);
+  display: grid; place-items: center; font-size: 19px; flex: none;
+}
+.so-tip-row .t { font-weight: 800; font-size: 14.5px; }
+.so-tip-row .d { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.so-tip-row .go { margin-left: auto; color: var(--muted); flex: none; }
+.so-tip-row .go svg { width: 16px; height: 16px; }
+
+/* confetti celebration */
+.so-confetti { position: fixed; inset: 0; z-index: 90; pointer-events: none; overflow: hidden; }
+.so-confetti i {
+  position: absolute; top: -14px; width: 8px; height: 13px; border-radius: 2px;
+  background: var(--c, #ff9a6b); opacity: .95;
+  animation: so-drop var(--d, 1.4s) ease-in forwards; animation-delay: var(--dl, 0s);
+}
+@keyframes so-drop {
+  0% { transform: translateY(0) rotate(0); }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+}
+
+/* staggered entrance */
+.so-fade { animation: fadeUp .5s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .so-flag, .so-flame, .so-halo, .so-confetti i { animation: none !important; }
+}

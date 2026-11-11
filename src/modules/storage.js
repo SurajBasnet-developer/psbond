@@ -142,6 +142,17 @@ export function removeCustomMantra(text) {
   return arr;
 }
 
+// ---------- Section Officer (Lok Sewa Aayog) prep ----------
+// One object 'bb.so': { started, examDate, plan, topics:{}, hours:{}, disc:{}, answers:{} }
+export function getSoState() {
+  return get('so', { started: null, examDate: null, plan: 'std', topics: {}, hours: {}, disc: {}, answers: {} });
+}
+export function setSoState(patch) {
+  const s = { ...getSoState(), ...patch };
+  set('so', s);
+  return s;
+}
+
 // ---------- GharGym (household equipment gym) ----------
 export function getGharDone(k = dayKey()) { return get('gharDone', {})[k] || {}; }
 export function markGharDone(id) {
@@ -220,7 +231,7 @@ export function stepsToKcal(km) {
 // ---------- export ----------
 export function exportData() {
   const dump = {};
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(k => { dump[k] = get(k); });
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'so', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(k => { dump[k] = get(k); });
   const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -230,5 +241,5 @@ export function exportData() {
 }
 
 export function resetAll() {
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(del);
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'so', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(del);
 }
