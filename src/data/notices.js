@@ -11,14 +11,14 @@ export const ADMIN_ROUTE = 'bb-admin-su7xkq92r4m8';
 // fields: id (unique), emoji, type (info | good | warn | love),
 // title, body, from / to ('YYYY-MM-DD', empty = forever), cta (optional).
 export const NOTICES = [
-     {
-    id: "n-2026-11-11-hsc37",
-    emoji: "📣",
-    type: "warn",
-    title: "Bhaitika",
-    body: "भाईटिकाको शुभ साहित ११:०७ मा रहेको छ । सम्पूर्णमा शुभकामना ।  HAPPY TIHAR",
+      {
+    id: "n-2026-11-13-wmx1s",
+    emoji: "🔊",
+    type: "info",
+    title: "We are excited to announce that we have added a new feature to our platform!",
+    body: "Section officer has been added to the system. Please check your dashboard for more details. Occupations and other details can be updated by the section officer.",
     from: '',
     to: '',
-    cta: null,
+    cta: { label: "Try this !", go: "" },
   },
 ];

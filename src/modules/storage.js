@@ -143,9 +143,14 @@ export function removeCustomMantra(text) {
 }
 
 // ---------- Section Officer (Lok Sewa Aayog) prep ----------
-// One object 'bb.so': { started, examDate, plan, topics:{}, hours:{}, disc:{}, answers:{} }
+// One object 'bb.so': { started, examDate, plan, topics:{}, hours:{}, disc:{}, answers:{},
+//   occupation, workStart, workEnd, commute, lunch, holiday:{} }
 export function getSoState() {
-  return get('so', { started: null, examDate: null, plan: 'std', topics: {}, hours: {}, disc: {}, answers: {} });
+  return {
+    started: null, examDate: null, plan: 'std', topics: {}, hours: {}, disc: {}, answers: {},
+    occupation: null, workStart: '09:00', workEnd: '17:00', commute: 30, lunch: true, holiday: {}, teq: {},
+    ...get('so', {}),
+  };
 }
 export function setSoState(patch) {
   const s = { ...getSoState(), ...patch };
