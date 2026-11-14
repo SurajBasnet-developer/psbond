@@ -1,5 +1,5 @@
 // Home — greeting, streak, quote of the day, daily challenge, quick programs, water.
-import { el, icon, toast, esc } from '../ui/dom.js';
+import { el, icon, toast, esc, openModal } from '../ui/dom.js';
 import { createFigure } from '../ui/figure.js';
 import { getSettings, getStreak, getXP, levelInfo, todayLog, getWater, setWater, getChallengeState, completeChallenge, getStats, getSteps, getStepGoal, stepsToKm, stepsToKcal } from '../modules/storage.js';
 import * as ped from '../modules/pedometer.js';
@@ -13,6 +13,7 @@ import { todaysFlags } from '../data/fests.js';
 import { t } from '../i18n.js';
 import { mountCard as mountWeather, waterTarget } from '../modules/weather.js';
 import { mountNoticeCard } from '../modules/notice.js';
+import { RAASHIS, findRashi, getRashifal, getRashifalSign, setRashifalSign } from '../modules/rashifal.js';
 
 export function render(view) {
   const settings = getSettings();
@@ -69,6 +70,16 @@ export function render(view) {
         </div>
       </div>
     </div>` : ''}
+
+    <div class="card tap mt-14" id="rashifal-card" style="border-color:rgba(157,123,255,.35)">
+      <div class="row">
+        <div class="rashi-glyph" id="rashifal-glyph">🕉️</div>
+        <div style="flex:1;min-width:0">
+          <div class="card-title">${t('Rashifal')} <span class="small muted" id="rashifal-sign"></span></div>
+          <div class="small" id="rashifal-body"><span class="muted">${t('Loading…')}</span></div>
+        </div>
+      </div>
+    </div>
 
     <div class="card quote-card mt-14" id="quote-card">
       <div class="mark">"</div>
@@ -149,6 +160,116 @@ export function render(view) {
 
   // announcements — beautiful card on top of Home + one-time device notification
   mountNoticeCard(view.querySelector('#notice-slot'));
+
+  // rashifal — daily horoscope card (free API, cached on-device)
+  const rashiGlyph = view.querySelector('#rashifal-glyph');
+  const rashiSignLabel = view.querySelector('#rashifal-sign');
+  const rashiBody = view.querySelector('#rashifal-body');
+  const OFFLINE_STARS = t('Stars are quiet — check your connection.');
+
+  const luckyChips = l => !l ? '' : `
+    <span class="lucky-chip">🔢 ${t('Lucky number')} <b>${l.number}</b></span>
+    <span class="lucky-chip"><i class="lucky-dot" style="background:${l.color.hex}"></i>${t('Lucky colour')} <b>${esc(l.color.ne)}</b></span>`;
+
+  const paintRashifal = (signId, r) => {
+    const rashi = findRashi(signId);
+    if (!rashi || !rashiBody?.isConnected) return;
+    rashiGlyph.textContent = rashi.emoji;
+    rashiSignLabel.textContent = `· ${rashi.ne}`;
+    rashiBody.innerHTML = r
+      ? `<div>${esc((r.ne || r.text).slice(0, 110))}…${r.offline ? ` <span class="muted">· ${t('offline')}</span>` : ''}</div>
+         <div class="rashi-lucky mt-8">${luckyChips(r.lucky)}</div>`
+      : `<span class="muted">${OFFLINE_STARS}</span>`;
+  };
+
+  const savedSign = getRashifalSign();
+  if (savedSign) {
+    getRashifal(savedSign).then(r => paintRashifal(savedSign, r));
+  } else {
+    rashiSignLabel.textContent = '';
+    rashiBody.innerHTML = `<span class="muted">${t('Tap to pick your raashi & read today\u2019s stars ✨')}</span>`;
+  }
+
+  view.querySelector('#rashifal-card').addEventListener('click', () => {
+    const cur = getRashifalSign();
+    const modal = openModal(`
+      <div class="rashi-modal-head">
+        <div class="rashi-modal-glyph" id="r-glyph">🕉️</div>
+        <div class="card-title" id="r-name">${t('Rashifal')}</div>
+        <div class="small muted" id="r-date"></div>
+      </div>
+      <div class="rashi-text" id="r-text"><span class="muted small">${t('Loading…')}</span></div>
+      <div class="rashi-lucky mt-10" id="r-lucky"></div>
+      <div class="card-title mt-14">${t('Pick your raashi')}</div>
+      <div class="rashi-grid" id="r-grid">
+        ${RAASHIS.map(r => `
+          <button class="rashi-chip ${r.id === cur ? 'on' : ''}" data-sign="${r.id}">
+            <span class="g">${r.emoji}</span><span class="n">${r.ne}</span>
+          </button>`).join('')}
+      </div>
+      <div class="row mt-14">
+        <button class="btn" id="r-share" style="flex:1" disabled>${icon('share')} ${t('Share')}</button>
+        <button class="btn" id="r-retry" style="flex:1">${icon('refresh')} ${t('Retry')}</button>
+        <button class="btn ghost" data-close style="flex:1">${t('Close')}</button>
+      </div>
+    `);
+
+    let shareQ = null;
+    let curSign = cur;
+    const grid = modal.el.querySelector('#r-grid');
+    const shareBtn = modal.el.querySelector('#r-share');
+
+    const loadSign = async (signId, force = false) => {
+      curSign = signId;
+      const rashi = findRashi(signId);
+      modal.el.querySelector('#r-glyph').textContent = rashi.emoji;
+      modal.el.querySelector('#r-name').textContent = `${rashi.ne} · ${rashi.en}`;
+      const textEl = modal.el.querySelector('#r-text');
+      textEl.innerHTML = `<span class="muted small">${t('Loading…')}</span>`;
+      grid.querySelectorAll('.rashi-chip').forEach(c => c.classList.toggle('on', c.dataset.sign === signId));
+      const r = await getRashifal(signId, force);
+      paintRashifal(signId, r);
+      if (r) {
+        modal.el.querySelector('#r-date').textContent = r.date;
+        textEl.textContent = r.ne || r.text;
+        modal.el.querySelector('#r-lucky').innerHTML = luckyChips(r.lucky);
+        shareQ = { rashi, r };
+        shareBtn.disabled = false;
+      } else {
+        textEl.innerHTML = `<span class="muted">${OFFLINE_STARS}</span>`;
+        modal.el.querySelector('#r-lucky').innerHTML = '';
+        shareQ = null;
+        shareBtn.disabled = true;
+      }
+    };
+
+    grid.addEventListener('click', e => {
+      const chip = e.target.closest('.rashi-chip');
+      if (!chip) return;
+      setRashifalSign(chip.dataset.sign);
+      if (navigator.vibrate) navigator.vibrate(10);
+      loadSign(chip.dataset.sign);
+    });
+
+    modal.el.querySelector('#r-retry').addEventListener('click', () => {
+      if (curSign) loadSign(curSign, true);
+    });
+
+    shareBtn.addEventListener('click', async () => {
+      if (!shareQ) return;
+      const body = shareQ.r.ne || shareQ.r.text;
+      const lucky = shareQ.r.lucky
+        ? `\n\n${t('Lucky number')}: ${shareQ.r.lucky.number} · ${t('Lucky colour')}: ${shareQ.r.lucky.color.ne}`
+        : '';
+      const text = `${shareQ.rashi.emoji} ${shareQ.rashi.ne} (${shareQ.rashi.en}) — ${shareQ.r.date}\n\n${body}${lucky}\n\nvia BiggerBody 💪❤️`;
+      try {
+        if (navigator.share) await navigator.share({ title: 'BiggerBody Rashifal', text });
+        else { await navigator.clipboard.writeText(text); toast(t('Copied to clipboard ✨')); }
+      } catch { /* cancelled */ }
+    });
+
+    if (cur) loadSign(cur);
+  });
 
   // quick programs
   const quick = view.querySelector('#quick');

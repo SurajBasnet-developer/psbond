@@ -246,5 +246,5 @@ export function exportData() {
 }
 
 export function resetAll() {
-  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'so', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(del);
+  ['settings', 'log', 'stats', 'xp', 'water', 'gratitude', 'challenge', 'quote', 'dummyQuotes', 'rashifal', 'rashifalSign', 'mantraDone', 'chantLog', 'malaPrefs', 'customMantras', 'so', 'gharDone', 'fastState', 'fastPatterns', 'steps', 'stepFlags'].forEach(del);
 }

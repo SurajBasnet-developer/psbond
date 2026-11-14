@@ -48,3 +48,40 @@ export async function getDailyQuote(force = false) {
 export function randomQuote() {
   return LOCAL_QUOTES[Math.floor(Math.random() * LOCAL_QUOTES.length)];
 }
+
+// ---------- DummyJSON big-quote engine (https://dummyjson.com/quotes) ----------
+// Fetches the full free library (~1450 quotes) once with ?limit=0, caches it on
+// device, then serves a seeded "quote of the day" or a random spark on demand.
+const DUMMY_URL = 'https://dummyjson.com/quotes?limit=0';
+
+async function getDummyLibrary() {
+  const cached = get('dummyQuotes', null);
+  if (cached?.quotes?.length) return cached;
+  try {
+    const data = await tryFetch(DUMMY_URL, 8000);
+    if (!Array.isArray(data?.quotes) || !data.quotes.length) throw new Error('empty');
+    const lib = {
+      quotes: data.quotes.map(x => ({ q: x.quote, a: x.author || 'Unknown' })),
+      total: data.total || data.quotes.length,
+      at: Date.now(),
+    };
+    try { set('dummyQuotes', lib); } catch { /* quota — usable this session only */ }
+    return lib;
+  } catch { return null; }
+}
+
+function seededIndex(len, salt = '') {
+  const s = Math.abs([...(dayKey() + salt)].reduce((a, c) => a + c.charCodeAt(0), 0));
+  return s % len;
+}
+
+export async function getBigQuote(force = false) {
+  const lib = await getDummyLibrary();
+  if (lib) {
+    const i = force ? Math.floor(Math.random() * lib.quotes.length) : seededIndex(lib.quotes.length);
+    return { ...lib.quotes[i], n: i + 1, total: lib.total, online: true };
+  }
+  // Offline — fall back to the bundled library with the same daily-seed logic.
+  const q = force ? randomQuote() : pickLocal(seededIndex(LOCAL_QUOTES.length));
+  return { ...q, n: 0, total: 0, online: false };
+}

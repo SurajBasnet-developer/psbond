@@ -423,6 +423,112 @@ a { color: inherit; text-decoration: none; }
 .quote-card blockquote { font-size: 17.5px; font-weight: 600; line-height: 1.55; }
 .quote-card cite { display: block; margin-top: 10px; font-style: normal; font-size: 13px; color: var(--muted); font-weight: 700; }
 
+/* Big motivation hero card — DummyJSON quote of the day */
+.quote-hero {
+  position: relative; overflow: hidden;
+  border-radius: var(--radius);
+  padding: 18px;
+  background:
+    linear-gradient(140deg, rgba(255, 154, 107, .17), rgba(255, 94, 125, .13) 50%, rgba(157, 123, 255, .17)),
+    var(--bg-2);
+  box-shadow: var(--shadow), 0 8px 44px rgba(255, 94, 125, .13);
+}
+.quote-hero::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: linear-gradient(135deg, #ffd9a3, #ff9a6b 45%, #ff5e7d 70%, #9d7bff);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.qh-glow {
+  position: absolute; top: -70px; right: -50px; width: 190px; height: 190px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 154, 107, .42), rgba(255, 94, 125, .18) 55%, transparent 72%);
+  filter: blur(22px); pointer-events: none;
+  animation: qhFloat 7s ease-in-out infinite alternate;
+}
+@keyframes qhFloat { from { transform: translate(0, 0) scale(1); } to { transform: translate(-16px, 14px) scale(1.14); } }
+.qh-sheen {
+  position: absolute; inset: 0; pointer-events: none; transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, .07) 50%, transparent 60%);
+  animation: qhSheen 5.5s ease-in-out infinite;
+}
+@keyframes qhSheen { 0%, 55% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
+.quote-hero .qh-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; position: relative; z-index: 1; }
+.qh-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--accent-1);
+}
+.qh-chip svg { width: 13px; height: 13px; }
+.qh-num { font-size: 11.5px; font-weight: 700; color: var(--muted); flex: none; }
+.qh-mark { position: absolute; right: 8px; bottom: 52px; font-size: 120px; font-weight: 800; opacity: .06; font-family: Georgia, serif; pointer-events: none; line-height: 1; }
+.quote-hero blockquote {
+  font-size: clamp(20px, 6vw, 25px); font-weight: 800; line-height: 1.42;
+  letter-spacing: -.01em; position: relative; z-index: 1;
+}
+.qh-author { display: flex; align-items: center; gap: 10px; margin-top: 16px; position: relative; z-index: 1; }
+.qh-avatar {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  font-size: 13px; font-weight: 800; color: #1a0b10; background: var(--grad);
+  box-shadow: 0 4px 14px rgba(255, 94, 125, .35);
+}
+.qh-who { font-size: 13.5px; font-weight: 700; color: var(--muted); }
+.qh-actions { display: flex; gap: 8px; margin-top: 18px; position: relative; z-index: 1; }
+.qh-btn {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 6px; border-radius: 13px; font-size: 13px; font-weight: 700;
+  background: var(--surface-2); border: 1px solid var(--border);
+  transition: transform .15s, filter .2s;
+}
+.qh-btn:active { transform: scale(.95); }
+.qh-btn svg { width: 15px; height: 15px; }
+.qh-btn-grad { background: var(--grad); color: #1a0b10; border: 0; box-shadow: 0 6px 18px rgba(255, 94, 125, .3); }
+.qh-btn-grad:active { filter: brightness(1.08); }
+.qh-skeleton { height: 21px; border-radius: 8px; background: var(--surface-2); margin: 10px 0; animation: qhPulse 1.2s ease-in-out infinite; }
+.qh-skeleton.w85 { width: 85%; }
+.qh-skeleton.w60 { width: 60%; }
+@keyframes qhPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+
+/* Rashifal — daily horoscope card */
+.rashi-glyph {
+  width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; flex: none;
+  font-size: 21px;
+  background: linear-gradient(135deg, rgba(157, 123, 255, .32), rgba(79, 140, 255, .16));
+  border: 1px solid rgba(157, 123, 255, .4);
+  box-shadow: 0 4px 14px rgba(157, 123, 255, .2);
+}
+.rashi-modal-head { display: grid; place-items: center; text-align: center; padding: 6px 0 2px; gap: 2px; }
+.rashi-modal-glyph {
+  width: 64px; height: 64px; border-radius: 22px; display: grid; place-items: center; font-size: 32px;
+  margin-bottom: 8px;
+  background: radial-gradient(circle at 35% 30%, rgba(157, 123, 255, .55), rgba(79, 140, 255, .25));
+  border: 1.5px solid rgba(157, 123, 255, .5);
+  box-shadow: 0 0 44px rgba(157, 123, 255, .3);
+}
+.rashi-text { margin-top: 12px; font-size: 14.5px; line-height: 1.65; }
+.rashi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.rashi-chip {
+  display: grid; place-items: center; gap: 2px; padding: 10px 4px 8px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  transition: transform .15s, border-color .2s, box-shadow .2s;
+}
+.rashi-chip:active { transform: scale(.94); }
+.rashi-chip .g { font-size: 18px; line-height: 1; }
+.rashi-chip .n { font-size: 11.5px; font-weight: 700; }
+.rashi-chip.on {
+  border-color: var(--mind);
+  box-shadow: 0 0 0 1px var(--mind), 0 6px 18px rgba(157, 123, 255, .22);
+  background: linear-gradient(135deg, rgba(157, 123, 255, .25), rgba(79, 140, 255, .12));
+}
+.rashi-lucky { display: flex; flex-wrap: wrap; gap: 8px; position: relative; z-index: 1; }
+.lucky-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--border);
+}
+.lucky-chip b { font-weight: 800; color: var(--text); }
+.lucky-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1px rgba(128, 128, 128, .45); }
+
 /* Breathing circle */
 .breath-stage { display: grid; place-items: center; padding: 30px 0 10px; }
 .breath-circle {

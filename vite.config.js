@@ -44,6 +44,12 @@ export default defineConfig({
             options: { cacheName: 'bb-wx-api', expiration: { maxEntries: 8, maxAgeSeconds: 86400 }, networkTimeoutSeconds: 10 },
           },
           {
+            // Rashifal — daily horoscope; the last good stars stay available offline
+            urlPattern: /horoscope-app-api\.vercel\.app/,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'bb-rashifal-api', expiration: { maxEntries: 16, maxAgeSeconds: 86400 }, networkTimeoutSeconds: 12 },
+          },
+          {
             // news feed/proxy calls — keep the last good payload around
             urlPattern: /jina\.ai|allorigins\.win|codetabs\.com|rss2json\.com|corsproxy\.io/,
             handler: 'NetworkFirst',

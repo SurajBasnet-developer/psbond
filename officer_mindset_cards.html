@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔥 OFFICER MINDSET — Section Officer Motivation Card Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@500;700;900&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crimson:#DC143C;      /* Nepal flag red */
+    --deepblue:#003893;     /* Nepal flag blue */
+    --gold:#F5B301;
+    --ink:#1a1207;
+    --paper:#FFF8EE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:linear-gradient(160deg,#111827 0%,#1f2937 100%);
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+    padding:40px 20px;
+  }
+  .deck-title{
+    text-align:center;color:#fff;margin-bottom:8px;
+    font-weight:900;font-size:clamp(22px,4vw,34px);letter-spacing:.5px;
+  }
+  .deck-sub{
+    text-align:center;color:#9ca3af;margin-bottom:36px;font-size:14px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:24px;
+    max-width:1150px;
+    margin:0 auto;
+  }
+  .card{
+    aspect-ratio:3/4;
+    border-radius:18px;
+    padding:22px 20px;
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.45);
+    border:3px solid var(--gold);
+    page-break-inside:avoid;break-inside:avoid;
+  }
+  .card::after{ /* subtle double-pennant watermark */
+    content:"";
+    position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.14), transparent 60%);
+    pointer-events:none;
+  }
+  .card.cover{background:linear-gradient(155deg,var(--deepblue) 0%,#0a2472 55%,var(--crimson) 100%);color:#fff;justify-content:center;align-items:center;text-align:center}
+  .card.family{background:linear-gradient(155deg,#8e0e2b,var(--crimson))}
+  .card.growth{background:linear-gradient(155deg,#7c4a03,#c47f17)}
+  .card.society{background:linear-gradient(155deg,#00246b,#0a4bb5)}
+  .card.enemy{background:linear-gradient(155deg,#1c1917,#3f1d1d)}
+  .card.booster{background:linear-gradient(135deg,var(--crimson),var(--deepblue))}
+  .card.howto{background:var(--paper);border-color:var(--deepblue)}
+
+  .tag{
+    align-self:flex-start;
+    font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+    background:rgba(255,255,255,.18);color:#fff;
+    padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  }
+  .howto .tag{background:var(--deepblue);border-color:var(--deepblue)}
+  .ne{
+    font-family:'Noto Serif Devanagari','Noto Sans Devanagari',sans-serif;
+    font-weight:900;line-height:1.5;
+    font-size:clamp(17px,2.2vw,21px);
+    margin-top:16px;color:#fff;
+  }
+  .en{
+    font-weight:800;line-height:1.45;
+    font-size:clamp(12.5px,1.6vw,14.5px);
+    margin-top:10px;color:rgba(255,255,255,.92);
+  }
+  .brand{
+    margin-top:auto;display:flex;align-items:center;gap:8px;
+    font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+    color:rgba(255,255,255,.85);
+  }
+  .flag{width:22px;height:22px;flex:none}
+  .num{
+    position:absolute;top:14px;right:16px;
+    font-weight:900;font-size:13px;color:rgba(255,255,255,.55);
+  }
+  .cover .crown{font-size:46px;margin-bottom:14px}
+  .cover h1{font-size:clamp(24px,3vw,30px);font-weight:900;line-height:1.25}
+  .cover .ne{margin-top:12px;font-size:17px}
+  .cover .brand{justify-content:center;margin-top:22px;color:rgba(255,255,255,.9)}
+  .howto .ne{color:var(--ink)}
+  .howto .en{color:#3f3f46;font-weight:600}
+  .howto ul{margin:14px 0 0 18px;font-size:13px;line-height:1.7;color:#27272a;font-weight:600}
+  .howto .brand{color:var(--deepblue)}
+
+  /* PRINT: 4 cards per A4 page */
+  @media print{
+    body{background:#fff;padding:0}
+    .deck-title,.deck-sub{color:#000}
+    .grid{grid-template-columns:repeat(2,1fr);gap:10px;max-width:100%}
+    .card{box-shadow:none;border-radius:10px}
+    @page{size:A4;margin:10mm}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-title">🔥 OFFICER MINDSET 🔥</div>
+<div class="deck-sub">Section Officer (अधिकृत) Motivation Card Deck — नेपाली + English · Print / Screenshot / Save as Wallpaper</div>
+
+<div class="grid">
+
+  <!-- COVER CARD -->
+  <div class="card cover">
+    <div class="crown">👑</div>
+    <h1>OFFICER MINDSET</h1>
+    <div class="ne">"जबसम्म म जित्दिनँ, तबसम्म म लड्छु।"</div>
+    <div class="en">"Until I win, I fight. The syllabus ends; my will doesn't."</div>
+    <div class="brand">
+      <svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#DC143C" stroke="#003893" stroke-width="1.4"/><path d="M3 11 L3 22 L18 17 Z" fill="#DC143C" stroke="#003893" stroke-width="1.4"/></svg>
+      SECTION OFFICER DECK · लोक सेवा
+    </div>
+  </div>
+
+  <!-- FAMILY -->
+  <div class="card family">
+    <span class="num">01</span><span class="tag">👪 Family · परिवार</span>
+    <div class="ne">"आमाको सपना, मेरो लक्ष्य।"</div>
+    <div class="en">"My mother's dream is my target — and targets get hit."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <div class="card family">
+    <span class="num">02</span><span class="tag">👪 Family · परिवार</span>
+    <div class="ne">"म आफ्नो परिवारको पुस्ता बदल्ने मान्छे हुँ।"</div>
+    <div class="en">"Every generation gets one person who breaks the ceiling. That person is me."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- GROWTH -->
+  <div class="card growth">
+    <span class="num">03</span><span class="tag">📈 Growth · विकास</span>
+    <div class="ne">"मन नसुन, तालिका सुन।"</div>
+    <div class="en">"Don't obey your mood. Obey your schedule. Discipline = half the win."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <div class="card growth">
+    <span class="num">04</span><span class="tag">📈 Growth · विकास</span>
+    <div class="ne">"आजको म, हिजोको मभन्दा बलियो।"</div>
+    <div class="en">"I don't compete with others. I compete with yesterday's version of me."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- SOCIETY -->
+  <div class="card society">
+    <span class="num">05</span><span class="tag">🇳🇵 Society · राष्ट्र</span>
+    <div class="ne">"सेवा नै मेरो विजय।"</div>
+    <div class="en">"I'm not chasing a post — I'm preparing to serve. Service is my victory."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <div class="card society">
+    <span class="num">06</span><span class="tag">🇳🇵 Society · राष्ट्र</span>
+    <div class="ne">"एउटा इमान्दार अधिकृत, सयौँ परिवारको राहत।"</div>
+    <div class="en">"One honest officer makes thousands of lives easier. Be that officer."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- ENEMY -->
+  <div class="card enemy">
+    <span class="num">07</span><span class="tag">⚔️ Enemy · शत्रु</span>
+    <div class="ne">"मौन मेहनत, ठूलो जवाफ।"</div>
+    <div class="en">"Haters are unpaid motivational coaches. Silent grind, loud results."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <div class="card enemy">
+    <span class="num">08</span><span class="tag">⚔️ Enemy · शत्रु</span>
+    <div class="ne">"उनीहरू बोल्छन्, म काम गर्छु।"</div>
+    <div class="en">"They talk; I work. The result sheet will speak for me."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- CONSISTENCY / COURAGE -->
+  <div class="card booster">
+    <span class="num">09</span><span class="tag">🔁 Consistency · निरन्तरता</span>
+    <div class="ne">"छोटो पढाइ, लामो जित।"</div>
+    <div class="en">"1 page → 1 chapter → 1 rank → 1 officer → 1 legacy. Small daily, wins big."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <div class="card booster">
+    <span class="num">10</span><span class="tag">🦁 Courage · साहस</span>
+    <div class="ne">"डर आउँछ, तर डराउँदैन।"</div>
+    <div class="en">"Fear is a visitor, not a resident. Let it visit — never let it decide."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- LEGACY -->
+  <div class="card family">
+    <span class="num">11</span><span class="tag">👑 Legacy · गरिमा</span>
+    <div class="ne">"मेरो नाम, पुस्तौँको गरिमा।"</div>
+    <div class="en">"When the result comes, let my name be the pride of my family for generations."</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- EMERGENCY BOOSTER -->
+  <div class="card booster">
+    <span class="num">12</span><span class="tag">🚨 Emergency · आपत्कालीन</span>
+    <div class="ne">"म रोकिँदिनँ। म आजै फर्कन्छु। म जित्छु।"</div>
+    <div class="en">"I don't quit. I restart now. I will win." — Read 10× when you feel weak.</div>
+    <div class="brand"><svg class="flag" viewBox="0 0 24 24"><path d="M3 2 L3 14 L14 10 Z" fill="#fff"/><path d="M3 11 L3 22 L18 17 Z" fill="#fff"/></svg>OFFICER MINDSET</div>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="card howto">
+    <span class="tag">📖 How to use · प्रयोग</span>
+    <ul>
+      <li>बिहान: Card नं. 03 पढ्नुहोस् (Discipline)</li>
+      <li>कमजोर महसुस हुँदा: Card नं. 12 पढ्नुहोस् (10 पटक)</li>
+      <li>Print गरेर पर्खालमा टाँस्नुहोस् (Ctrl+P → PDF)</li>
+      <li>Screenshot गरेर Phone Wallpaper बनाउनुहोस्</li>
+      <li>हरेक दिन १ वटा नयाँ card रोज्नुहोस्</li>
+    </ul>
+    <div class="brand">🔥 OFFICER MINDSET · अधिकृत बन्ने मन</div>
+  </div>
+
+</div>
+
+<div class="deck-sub" style="margin-top:30px">जय नेपाल 🇳🇵 — "जबसम्म म जित्दिनँ, तबसम्म म लड्छु।"</div>
+
+</body>
+</html>

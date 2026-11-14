@@ -41,6 +41,16 @@ export const ROUTE_LABEL = {
 };
 
 const NE = {
+  // ---- rashifal ----
+  'Rashifal': 'राशिफल',
+  'Lucky number': 'शुभ अंक',
+  'Lucky colour': 'शुभ रङ',
+  'Tap to pick your raashi & read today\u2019s stars ✨': 'आफ्नो राशि छान्नुहोस् र आजका ग्रहहरू पढ्नुहोस् ✨',
+  'Pick your raashi': 'आफ्नो राशि छान्नुहोस्',
+  'Stars are quiet — check your connection.': 'तारा मौन छन् — इन्टरनेट जाँच्नुहोस्।',
+  'offline': 'अफलाइन',
+  'Copied to clipboard ✨': 'क्लिपबोर्डमा प्रतिलिपि भयो ✨',
+
   // ---- chrome / router ----
   'Home': 'होम',
   'Train': 'तालिम',
